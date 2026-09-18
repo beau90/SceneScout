@@ -53,9 +53,13 @@ def load_users():
     return {} # Returns an empty dictionary if the file does not exist
 
 def save_users():
-    """Saves the current in-memory user database dictionary back to the users.json file."""
-    with open(USERS_FILE, "w") as f: # Opens the users file in write mode
-        json.dump(users_db, f, indent=4) # Serializes the active user dictionary into formatted JSON text
+    """Saves the current in-memory user database dictionary back to the users.json file safely on read-only serverless filesystems."""
+    try:
+        with open(USERS_FILE, "w") as f: # Opens the users file in write mode
+            json.dump(users_db, f, indent=4) # Serializes the active user dictionary into formatted JSON text
+    except Exception as e:
+        # Vercel is read-only, catching this prevents the app from crashing with a 500 server error
+        print(f"FileSystem Notice: Running on read-only storage ({e})")
 
 users_db = load_users() # Executes the loader function to populate the user database into server memory on startup
 

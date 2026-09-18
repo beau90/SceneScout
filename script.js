@@ -5,7 +5,7 @@
  */
 
 /* ========================================== */
-/* SCRIPT DIRECTORY & TABLE OF CONTENTS       */
+/* SCRIPT DIRECTORY & TABLE OF CONTENTS        */
 /* ========================================== */
 /* 
   1. GLOBAL STATE VARIABLES
@@ -27,7 +27,9 @@
 // ==========================================
 // 1. GLOBAL STATE VARIABLES
 // ==========================================
-let isSignUpMode = false;          // Tracks whether the auth screen is currently set to Sign Up or Sign In mode
+const API_BASE_URL = "https://scenescout-sable.vercel.app"; // Defines live production Vercel backend API base URL string
+
+let isSignUpMode = false;         // Tracks whether the auth screen is currently set to Sign Up or Sign In mode
 let currentPendingUser = "";       // Stores the username string of the actively logged-in or registering user account
 let userAuthToken = "";            // Stores the active authorization session token string received from backend
 let selectedAvatarValue = "🎬";    // Stores the currently selected avatar icon emoji character or custom image data URL string
@@ -100,7 +102,7 @@ async function loadFactOfDay() {
     factElement.innerHTML = "Loading today's cinematic fact..."; // Sets initial loading text placeholder state string
 
     try {
-        const response = await fetch("http://localhost:8000/api/movie-fact"); // Sends asynchronous HTTP GET request to fact endpoint URL
+        const response = await fetch(`${API_BASE_URL}/api/movie-fact`); // Sends asynchronous HTTP GET request to live fact endpoint URL
         const data = await response.json(); // Parses incoming response body stream into a JavaScript object literal
 
         if (data.success && data.fact) { // Validates that the parsed response contains a successful fact payload property
@@ -254,11 +256,11 @@ async function submitForgotPassword() {
     if (msg) msg.textContent = "Sending Reset Link..."; // Updates message status text string during asynchronous request transmission
 
     try {
-        const response = await fetch("http://localhost:8000/api/forgot-password", {
+        const response = await fetch(`${API_BASE_URL}/api/forgot-password`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email })
-        }); // Sends password recovery POST request payload to backend REST API endpoint URL
+        }); // Sends password recovery POST request payload to live backend REST API endpoint URL
 
         const data = await response.json(); // Parses incoming response stream into a JSON object literal
 
@@ -307,11 +309,11 @@ async function handleAuthSubmit() {
     const bodyData = isSignUpMode ? { username, password, email } : { username, password }; // Sets request body object payload structure
 
     try {
-        const response = await fetch(`http://localhost:8000${endpoint}`, {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(bodyData)
-        }); // Sends authentication API request POST payload to FastAPI backend server
+        }); // Sends authentication API request POST payload to live FastAPI backend server
 
         const data = await response.json(); // Parses response body stream into a JSON object literal
 
@@ -337,7 +339,7 @@ async function handleAuthSubmit() {
             if (msg) msg.textContent = data.detail || "Authentication Failed."; // Displays server error detail message text string
         }
     } catch (err) {
-        if (msg) msg.textContent = "Server Error. Ensure Uvicorn is running at http://localhost:8000."; // Displays server connection error text string on failure
+        if (msg) msg.textContent = "Server Error. Ensure backend is running online."; // Displays server connection error text string on failure
     }
 }
 
@@ -364,11 +366,11 @@ async function verifyMfaCode() {
     }
 
     try {
-        const response = await fetch("http://localhost:8000/api/verify-mfa", {
+        const response = await fetch(`${API_BASE_URL}/api/verify-mfa`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: targetUser, code: code })
-        }); // Sends MFA verification POST request payload to backend API endpoint URL
+        }); // Sends MFA verification POST request payload to live backend API endpoint URL
 
         const data = await response.json(); // Parses response body stream into a JSON object literal
 
@@ -431,7 +433,7 @@ async function verifyMfaCode() {
  */
 async function fetchAndPopulateProfile() {
     try {
-        const response = await fetch("http://localhost:8000/api/profile", {
+        const response = await fetch(`${API_BASE_URL}/api/profile`, {
             method: "GET",
             headers: { "username": currentPendingUser || localStorage.getItem("scenescout_username") || "" }
         }); // Sends HTTP GET request to fetch user profile data with active username request header
@@ -508,7 +510,7 @@ async function loadMovieNews() {
     if (!recentFeed || !upcomingFeed || !newsFeed || !discussionFeed) return; // Exits function early if any feed container element is missing
 
     try {
-        const res = await fetch("http://localhost:8000/api/movie-news"); // Sends HTTP GET request for aggregated movie feeds JSON payload
+        const res = await fetch(`${API_BASE_URL}/api/movie-news`); // Sends HTTP GET request for aggregated live movie feeds JSON payload
         const data = await res.json(); // Parses incoming response body stream into a JSON object literal
         
         if (data.success) { // Checks if data retrieval operation completed successfully
@@ -697,7 +699,7 @@ async function saveProfile() {
     const activeUser = currentPendingUser || localStorage.getItem("scenescout_username") || ""; // Determines active username string
 
     try {
-        const response = await fetch("http://localhost:8000/api/profile/update", {
+        const response = await fetch(`${API_BASE_URL}/api/profile/update`, {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
@@ -714,7 +716,7 @@ async function saveProfile() {
                 bio: bio,
                 avatar: selectedAvatarValue
             })
-        }); // Sends profile update POST request payload to backend API endpoint URL with active username header
+        }); // Sends profile update POST request payload to live backend API endpoint URL with active username header
 
         const data = await response.json(); // Parses response body stream into a JSON object literal
 
@@ -771,10 +773,10 @@ async function deleteAccount() {
     const activeUser = currentPendingUser || localStorage.getItem("scenescout_username") || ""; // Determines active username string
 
     try {
-        const response = await fetch("http://localhost:8000/api/account/delete", {
+        const response = await fetch(`${API_BASE_URL}/api/account/delete`, {
             method: "POST",
             headers: { "username": activeUser }
-        }); // Sends account deletion POST request payload to backend API endpoint URL with username header
+        }); // Sends account deletion POST request payload to live backend API endpoint URL with username header
 
         const data = await response.json(); // Parses response body stream into a JSON object literal
 
@@ -956,10 +958,10 @@ async function uploadImage() {
     formData.append("file", fileInput.files[0]); // Appends selected screenshot image file object to form data payload under file key
 
     try {
-        const response = await fetch("http://localhost:8000/identify", {
+        const response = await fetch(`${API_BASE_URL}/identify`, {
             method: "POST",
             body: formData,
-        }); // Sends screenshot image POST request payload to FastAPI identify endpoint URL
+        }); // Sends screenshot image POST request payload to live FastAPI identify endpoint URL
 
         const data = await response.json(); // Parses response body stream into a JSON object literal
         
@@ -1010,7 +1012,7 @@ async function uploadImage() {
         if (modalBody) {
             modalBody.innerHTML = `
                 <h3>❌ Connection Error</h3>
-                <p>Error connecting to FastAPI server. Ensure Uvicorn is running.</p>
+                <p>Error connecting to live FastAPI server.</p>
                 <button class="btn-primary" onclick="searchAnotherFromModal()">Close</button>
             `; // Renders connection error failure message card inside modal body container element
         }
@@ -1047,7 +1049,7 @@ async function loadTvShowsPage() {
     if (!feed) return; // Exits function safely if feed container element is missing from current page
 
     try {
-        const res = await fetch("http://localhost:8000/api/tv-shows"); // Sends HTTP GET request to popular TV shows endpoint URL
+        const res = await fetch(`${API_BASE_URL}/api/tv-shows`); // Sends HTTP GET request to live popular TV shows endpoint URL
         const data = await res.json(); // Parses response body stream into a JSON object literal
 
         if (data.success && data.tv_shows && data.tv_shows.length > 0) { // Validates that popular shows array was returned successfully by backend
@@ -1311,7 +1313,7 @@ async function fetchGlobalTvShowFromTVmaze(query) {
     resultsFeed.innerHTML = "<div style='color: #94a3b8; text-align: center; padding: 15px;'>Searching TVmaze...</div>"; // Renders searching status placeholder string
 
     try {
-        const response = await fetch(`http://localhost:8000/api/tv-search?query=${encodeURIComponent(query)}`); // Sends GET request to backend TVmaze search route URL
+        const response = await fetch(`${API_BASE_URL}/api/tv-search?query=${encodeURIComponent(query)}`); // Sends GET request to live backend TVmaze search route URL
         const data = await response.json(); // Parses response body stream into a JSON object literal
 
         if (data.success && data.show) { // Checks if the backend successfully found the matching show object

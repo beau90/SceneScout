@@ -3,11 +3,11 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "main.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/identify",
-      "dest": "main.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/(.*\\.(html|css|js|png|jpg|ico))",

@@ -18,6 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware # Imports CORS middleware to 
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType # Imports mail framework for sending SMTP messages
 from PIL import Image          # Python Imaging Library (Pillow) to open, resize, and inspect uploaded images
 import google.generativeai as genai # Imports official Google Gemini AI library for computer vision analysis
+from dotenv import load_dotenv
+load_dotenv()
 
 # ==========================================
 # 2. FASTAPI APP INITIALIZATION & CORS SETUP

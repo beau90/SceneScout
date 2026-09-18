@@ -2200,6 +2200,46 @@ input:focus, select:focus, textarea:focus {
     margin-bottom: 0; /* Zero bottom margin */
 }
 
+/* Fix for TV Show grid card poster sizing */
+.tvshows-grid-container .news-card img {
+    width: 100% !important;
+    height: 230px !important;
+    object-fit: cover !important;
+    border-radius: 6px !important;
+    margin-bottom: 8px !important;
+}
+
+/* Fix to ensure TV show cards maintain uniform structure */
+.tvshows-grid-container .news-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    text-align: center !important;
+}
+
+/* Target ONLY the button container at the bottom of the TV show cards */
+.tvshows-grid-container .news-card > div:last-child {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    margin-top: auto !important;
+}
+
+/* Ensure the Fav and Rate buttons share the row evenly */
+.tvshows-grid-container .news-card > div:last-child button {
+    flex: 1 !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+
+/* Add breathing room between the TV show poster/title and the buttons */
+.tvshows-grid-container .news-card > div:last-child {
+    margin-top: 12px !important;
+}
+
 /* ========================================== */
 /* 30. ACCOUNT.HTML SPECIFIC CLEANUP CLASSES  */
 /* ========================================== */

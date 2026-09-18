@@ -1,6 +1,5 @@
 fastapi
 uvicorn[standard]
-uvicorn
 requests
 httpx
 python-dotenv
@@ -23,3 +22,4 @@ google-auth
 google-auth-oauthlib
 google-auth-httplib2
 Pillow
+google-generativeai

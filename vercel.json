@@ -16,8 +16,12 @@
       "dest": "main.py"
     },
     {
-      "src": "/(.*)",
+      "src": "/(.*\\.(html|css|js|png|jpg|ico))",
       "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }

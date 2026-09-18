@@ -1,0 +1,2380 @@
+/* ========================================== */
+/* STYLESHEET DIRECTORY & TABLE OF CONTENTS   */
+/* ========================================== */
+/* 
+  1. GLOBAL RESET & BASE STYLES
+  2. LOGO, BRANDING & ROLLING ANIMATIONS
+  3. FLOATING BACKGROUND PARTICLES
+  4. COMBINED TOP BANNER & FILM STRIP HEADER
+  5. HAMBURGER MENU STYLING (LAPTOP & MOBILE DROPDOWN)
+  6. PRESET AVATARS GRID
+  7. AUTHENTICATION SCREENS & FORMS
+  8. GENERAL BUTTON STYLES
+  9. DASHBOARD APP LAYOUT & COLUMNS
+  10. HOMEPAGE FEEDS SCROLLBAR STYLING ONLY
+  11. DRAG & DROP ZONE & NEWS GRID CARDS
+  12. PROFILE PAGE & SETTINGS CARD STYLING
+  13. TV SHOWS NAV BAR LOGO CLASS
+  14. PROFILE HUB 3-COLUMN LAYOUT STYLING
+  15. EXTRA REFACTORED PROFILE PAGE CLASSES
+  16. PROPER UN-CROPPED SIZING FOR CUSTOM POSTERS
+  17. FORUM & NEWS LINK STYLING
+  18. HOMEPAGE FEED POSTER IMAGE SIZING
+  19. IDENTIFIED MOVIE RESULT CARD & POSTER
+  20. MISC SPACING & LAYOUT HELPERS
+  21. IDENTIFYING & RESULT MODAL POPUP STYLES (UPDATED FOR SUCCESS MODAL)
+  22. CUSTOM SCROLLBAR STYLING FOR TV SHOWS FEED
+  23. HAMBURGER MENU & RESPONSIVE LOGOUT CONFIG
+  24. HIDE TOP NAV LOGO ON MOBILE & TABLET
+  25. FULL SINGLE-LINE RESPONSIVE HEADER TITLES
+  26. RESPONSIVE PROFILE HUB (MOBILE ONLY STACK)
+  27. INDEX.HTML SPECIFIC CLEANUP CLASSES
+  28. PROFILE.HTML SPECIFIC CLEANUP CLASSES
+  29. TVSHOWS.HTML SPECIFIC CLEANUP CLASSES
+  30. ACCOUNT.HTML SPECIFIC CLEANUP CLASSES
+  31. MODAL POPUP CENTERING & OVERFLOW FIXES
+  32. PROFILE USERNAME CENTERING STYLES
+*/
+
+/* ========================================== */
+/* 1. GLOBAL RESET & BASE STYLES              */
+/* ========================================== */
+
+/* Applies border-box sizing and resets margins/padding across all elements */
+* {
+    box-sizing: border-box; /* Includes padding and borders within total element width/height */
+    margin: 0;   /* Removes browser default outer spacing for layout consistency */
+    padding: 0;  /* Removes browser default inner spacing across all tags */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Sets fallback font stack */
+}
+
+/* Base styling for the root document viewport */
+body {
+    background-color: #1a1f2c; /* Sets main dark navy background color */
+    color: #f8fafc;            /* Sets base off-white typography color for high contrast */
+    min-height: 100vh;           /* Forces body height to span at least full window height */
+    display: flex;               /* Establishes flexbox layout context on top-level body */
+    flex-direction: column;    /* Stacks header and main contents vertically */
+    font-size: 1.05rem;          /* Establishes global base text size ratio */
+}
+
+/* ========================================== */
+/* 2. LOGO, BRANDING & ROLLING ANIMATIONS     */
+/* ========================================== */
+
+/* Centered container wrapper for auth screen logo graphics */
+.brand-logo {
+    margin-bottom: 25px; /* Adds vertical space between logo and heading */
+    display: flex; /* Enables flexbox layout for centering children */
+    flex-direction: column; /* Stacks image logo and subtext vertically */
+    align-items: center; /* Horizontally centers child items inside container */
+    justify-content: center; /* Vertically centers child items inside container */
+}
+
+/* Keyframe definition for spinning roll-in intro effect */
+@keyframes rollIn {
+    0% {
+        opacity: 0; /* Fully transparent starting state */
+        transform: translateX(-150px) rotate(-360deg); /* Starts off-screen left and fully reversed */
+    }
+    100% {
+        opacity: 1; /* Fully visible ending state */
+        transform: translateX(0) rotate(0deg); /* Settles at native origin with zero rotation */
+    }
+}
+
+/* Styling and entrance trigger for main login/signup logo */
+.auth-logo-img {
+    width: 100%; /* Spans full container width up to max boundary */
+    max-width: 650px; /* Caps maximum horizontal size on desktop screens */
+    height: auto; /* Maintains natural image aspect ratio */
+    object-fit: contain; /* Prevents image stretching inside bounds */
+    display: block; /* Converts image from inline to block element */
+    margin: 0 auto 10px; /* Centers horizontally and adds bottom margin */
+    opacity: 0; /* Starts hidden until keyframe animation kicks in */
+    transform-origin: center center; /* Sets rotation pivot point to exact center */
+    animation: rollIn 1s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards; /* Executes rollIn animation once */
+    filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.4)); /* Adds glowing blue drop shadow */
+}
+
+/* Compact logo styling for feed sidebar headers */
+.column-logo-img {
+    width: 100%; /* Expands to parent container width */
+    max-width: 450px; /* Limits max horizontal scale for smaller headers */
+    height: auto; /* Preserves aspect ratio */
+    object-fit: contain; /* Ensures un-distorted scaling */
+    display: block; /* Block layout behavior */
+    opacity: 0; /* Hidden prior to animation trigger */
+    transform-origin: center center; /* Centers rotation axis */
+    animation: rollIn 1s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards; /* Triggers rollIn animation */
+    filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.3)); /* Soft blue ambient drop shadow */
+}
+
+/* Subtitle text under branding graphics */
+.tagline {
+    font-size: 1.05rem; /* Sets subtitle font size */
+    color: #94a3b8; /* Muted slate grey text color */
+    margin-top: 6px; /* Adds small top separation from logo image */
+    text-align: center; /* Centers text horizontally */
+}
+
+/* ========================================== */
+/* 3. FLOATING BACKGROUND PARTICLES           */
+/* ========================================== */
+
+/* Fixed background container spanning full viewport for ambient floating effects */
+.particle-background {
+    position: fixed; /* Fixes container to background viewport layer */
+    top: 0;          /* Aligns to top edge of screen */
+    left: 0;         /* Aligns to left edge of screen */
+    width: 100%;     /* Spans 100% of viewport width */
+    height: 100%;    /* Spans 100% of viewport height */
+    overflow: hidden; /* Clips particles as they float out of bounds */
+    pointer-events: none; /* Allows mouse clicks to pass straight through to UI elements below */
+    z-index: -1;     /* Keeps background particles behind all main interface cards */
+}
+
+/* Base styling for individual floating particle elements */
+.particle {
+    position: absolute; /* Positions particles absolutely within background layer */
+    bottom: -50px;      /* Starts particles slightly off-screen at the bottom */
+    opacity: 0.75;      /* Increased transparency level for higher visibility */
+    animation: floatUp 15s infinite linear; /* Continuously loops upward floating animation */
+}
+
+/* Specific styling for popcorn kernel particles */
+.particle.popcorn {
+    width: 12px;                    /* Particle width */
+    height: 12px;                   /* Particle height */
+    background-color: #fef08a;    /* Soft buttery yellow fill color */
+    border-radius: 50% 40% 60% 40%; /* Organic rounded kernel shape */
+    box-shadow: 0 0 8px rgba(254, 240, 138, 0.8); /* Brighter yellow glow effect */
+}
+
+/* Specific styling for film strip particles */
+.particle.film-strip {
+    width: 14px;                    /* Particle width */
+    height: 20px;                   /* Particle height */
+    background-color: #334155;    /* Dark film strip grey fill */
+    border: 1px dashed #cbd5e1;   /* Brighter dashed border mimicking film perforation blocks */
+    box-shadow: 0 0 6px rgba(148, 163, 184, 0.4); /* Soft outline glow */
+}
+
+/* Random positioning and animation timing offsets for all 16 particles */
+.particle:nth-child(1)  { left: 3%;   animation-duration: 12s; animation-delay: 0s; }
+.particle:nth-child(2)  { left: 10%; animation-duration: 15s; animation-delay: 2s; }
+.particle:nth-child(3)  { left: 18%; animation-duration: 10s; animation-delay: 4s; }
+.particle:nth-child(4)  { left: 25%; animation-duration: 14s; animation-delay: 1s; }
+.particle:nth-child(5)  { left: 33%; animation-duration: 11s; animation-delay: 5s; }
+.particle:nth-child(6)  { left: 40%; animation-duration: 16s; animation-delay: 3s; }
+.particle:nth-child(7)  { left: 48%; animation-duration: 13s; animation-delay: 0.5s; }
+.particle:nth-child(8)  { left: 55%; animation-duration: 12s; animation-delay: 2.5s; }
+.particle:nth-child(9)  { left: 63%; animation-duration: 15s; animation-delay: 4.5s; }
+.particle:nth-child(10) { left: 70%; animation-duration: 11s; animation-delay: 1.5s; }
+.particle:nth-child(11) { left: 78%; animation-duration: 14s; animation-delay: 3.5s; }
+.particle:nth-child(12) { left: 85%; animation-duration: 10s; animation-delay: 0.2s; }
+.particle:nth-child(13) { left: 92%; animation-duration: 16s; animation-delay: 2.2s; }
+.particle:nth-child(14) { left: 45%; animation-duration: 12s; animation-delay: 4.1s; }
+.particle:nth-child(15) { left: 20%; animation-duration: 13s; animation-delay: 1.8s; }
+.particle:nth-child(16) { left: 60%; animation-duration: 15s; animation-delay: 3.1s; }
+
+/* Keyframe animation driving upward vertical floating and rotation */
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) rotate(0deg); /* Starting bottom baseline position */
+        opacity: 0;                            /* Fully transparent at birth */
+    }
+    15% {
+        opacity: 0.75;                         /* Fades in quickly to high visibility */
+    }
+    85% {
+        opacity: 0.75;                         /* Sustains visibility longer mid-air */
+    }
+    100% {
+        transform: translateY(-110vh) rotate(360deg); /* Floats completely off top screen edge with full rotation */
+        opacity: 0;                                   /* Fades out completely at destination */
+    }
+}
+
+/* ========================================== */
+/* 4. COMBINED TOP BANNER & FILM STRIP HEADER */
+/* ========================================== */
+
+/* Outer wrapper framing the combined top banner (Unified to 1400px to match index.html) */
+.top-fact-banner-wrapper {
+    max-width: 1400px !important; /* Standardized to match home page width */
+    margin: 20px auto 0 auto !important; /* Centers banner and adds top spacing */
+    padding: 0 25px !important; /* Matches horizontal padding of app layout */
+    width: 100% !important; /* Spans full available width */
+}
+
+/* Combined header card styled with the movie film strip background look */
+.combined-fact-nav-card {
+    background-color: #111827; /* Sets base dark card background color */
+    background-image: 
+        linear-gradient(90deg, transparent 12px, #ffffff 12px, #ffffff 24px, transparent 24px), /* Top sprocket holes */
+        linear-gradient(90deg, transparent 12px, #ffffff 12px, #ffffff 24px, transparent 24px), /* Bottom sprocket holes */
+        linear-gradient(180deg, #1e2533 0%, #161b22 100%); /* Solid dark film ribbon center gradient */
+    background-size: 50px 8px, 50px 8px, 100% 100%; /* Sizes background pattern slices */
+    background-position: top center, bottom center, 0 0; /* Positions sprocket holes at top/bottom */
+    background-repeat: repeat-x, repeat-x, no-repeat; /* Repeats sprocket holes horizontally */
+    padding: 15px 25px !important; /* Internal padding framing the sprocket holes nicely */
+    border: 2px solid #0f172a !important; /* Strong outer film border line */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Deep shadow depth for film ribbon appearance */
+    display: flex !important; /* Flexbox horizontal alignment */
+    justify-content: space-between !important; /* Spreads left group, center content, and right group */
+    align-items: center !important; /* Centers items vertically */
+    border-radius: 12px !important; /* Rounded card corners */
+    gap: 15px !important; /* Spacing gap between header flex children */
+}
+
+/* Center content block inside the combined header card */
+.combined-fact-center-content {
+    flex: 1 1 auto !important; /* Takes available center space */
+    min-width: 0 !important; /* CRITICAL: Prevents flex overflow collisions */
+    text-align: center !important; /* Centers text content */
+    padding: 0 10px !important; /* Horizontal inner buffer */
+}
+
+/* Left side navigation logo and link grouping */
+.nav-left-group {
+    display: flex !important; /* Horizontally aligns items in row */
+    align-items: center !important; /* Centers left items vertically */
+    gap: 12px !important; /* Adds horizontal gap between elements */
+    flex: 0 0 auto !important; /* Prevents left group from flexing/shrinking */
+    min-width: 0 !important; /* Resets minimum width constraints */
+}
+
+/* Right side navigation user controls grouping */
+.nav-right-group {
+    display: flex !important; /* Flexbox row alignment */
+    align-items: center !important; /* Vertical center alignment */
+    gap: 12px !important; /* Spacing gap between elements */
+    flex: 0 0 auto !important; /* Prevents right group from flexing */
+    min-width: 0 !important; /* Resets minimum width constraints */
+}
+
+/* General button style inside top header */
+.nav-link-btn {
+    padding: 8px 16px; /* Internal padding for button clickable area */
+    background-color: #3b82f6; /* Accent blue background */
+    color: #ffffff; /* White label text */
+    border: none; /* Removes default button borders */
+    border-radius: 6px; /* Rounded corners */
+    font-size: 1rem; /* Standard text size */
+    font-weight: bold; /* Bold text weight */
+    cursor: pointer; /* Displays hand pointer icon on hover */
+    transition: background 0.2s; /* Smooth background transition on interaction */
+    text-align: center; /* Centers label text */
+    display: inline-block; /* Inline block positioning */
+    text-decoration: none; /* Removes hyperlink underline formatting */
+}
+
+/* Hover state for nav link buttons */
+.nav-link-btn:hover {
+    background-color: #2563eb; /* Darkens blue background on hover */
+    color: #ffffff; /* Keeps text white */
+}
+
+/* Dedicated logout action button */
+.nav-logout-btn {
+    padding: 8px 16px; /* Padding sizing */
+    background-color: #3b82f6; /* Accent blue fill */
+    color: #ffffff; /* White text color */
+    border: none; /* Removes outline border */
+    border-radius: 6px; /* Rounded corner radius */
+    font-size: 1rem; /* Text size */
+    font-weight: bold; /* Bold weight */
+    cursor: pointer; /* Pointer cursor indicator */
+    transition: background 0.2s; /* Smooth hover transition */
+    text-align: center; /* Centered text */
+    display: inline-block; /* Display mode */
+}
+
+/* Logout button hover effect */
+.nav-logout-btn:hover {
+    background-color: #2563eb; /* Darker blue shade on hover */
+}
+
+/* Centered welcome message banner in navigation header */
+.nav-fun-text {
+    color: #f8fafc; /* Bright off-white color */
+    font-size: 1.05rem; /* Readable base text size */
+    font-weight: 600; /* Semi-bold weight */
+    letter-spacing: 0.2px; /* Subtle letter spacing */
+    user-select: none; /* Prevents text highlighting on click */
+    text-align: center; /* Centered alignment */
+    white-space: nowrap !important; /* Forces text to remain strictly on a single line */
+    overflow: hidden; /* Hides overflow text if space shrinks */
+    text-overflow: ellipsis; /* Appends "..." if text gets truncated */
+    width: 100% !important; /* Spans full center width */
+}
+
+/* Keyframe entrance animation for header welcome banner */
+@keyframes fadeInOnce {
+    0% {
+        opacity: 0; /* Fully hidden */
+        transform: translateY(-5px); /* Slightly elevated */
+    }
+    100% {
+        opacity: 1; /* Fully visible */
+        transform: translateY(0); /* Settles at origin */
+    }
+}
+
+/* Class application for welcome message animation */
+.animated-welcome {
+    animation: fadeInOnce 1.2s ease-out forwards; /* Runs fadeInOnce once on load */
+}
+
+/* ========================================== */
+/* 5. HAMBURGER MENU STYLING                  */
+/* ========================================== */
+
+/* Hamburger menu container wrapper */
+.hamburger-menu-container {
+    position: relative; /* Serves as anchor parent for absolute dropdown menu */
+    display: inline-block; /* Standard inline block display */
+}
+
+/* Clickable hamburger icon trigger button in header */
+.hamburger-btn {
+    background-color: #1e2533; /* Dark card background */
+    border: 1px solid #333c51; /* Subtle border line */
+    color: #f8fafc; /* Bright icon color */
+    font-size: 1.5rem; /* Icon font size */
+    padding: 6px 12px; /* Internal button padding */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.2s, border-color 0.2s; /* Smooth hover transition */
+}
+
+/* Hamburger button hover state */
+.hamburger-btn:hover {
+    background-color: #283245; /* Lightens background fill on hover */
+    border-color: #3b82f6; /* Blue border highlight on hover */
+}
+
+/* Hidden popup menu container for hamburger items - acts as dropdown on laptops & desktops */
+.hamburger-menu {
+    display: none; /* Hidden by default until toggled via JavaScript */
+    position: absolute; /* Positions menu directly under trigger button */
+    right: 0; /* Aligns flush to right edge of parent */
+    top: calc(100% + 8px); /* Offsets menu neatly below header button */
+    background-color: #252c3d; /* Dark slate background */
+    min-width: 240px; /* Minimum width boundary */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6); /* Deep shadow for overlay visual hierarchy */
+    border-radius: 10px; /* Rounded corners */
+    border: 1px solid #333c51; /* Outer border line */
+    z-index: 200; /* Ensures menu floats above page content */
+    overflow: hidden; /* Clips child hover states within rounded corners */
+}
+
+/* Toggled active state displaying hamburger menu dropdown */
+.hamburger-menu.show {
+    display: block; /* Shows dropdown when toggled via JavaScript */
+}
+
+/* Profile header section inside hamburger menu (First item: Profile pic/username) */
+.hamburger-user-header {
+    display: flex; /* Flexbox alignment */
+    align-items: center; /* Centers avatar and text vertically */
+    gap: 12px; /* Internal spacing between items */
+    padding: 14px 16px; /* Internal header padding */
+    background-color: #1e2533; /* Distinct dark contrast background */
+    border-bottom: 1px solid #333c51; /* Bottom divider line */
+}
+
+/* Circle avatar preview inside hamburger header */
+.nav-avatar {
+    width: 34px; /* Fixed width */
+    height: 34px; /* Fixed height matching width */
+    border-radius: 50%; /* Perfect circle mask */
+    object-fit: cover; /* Prevents image aspect ratio distortion */
+    border: 2px solid #3b82f6; /* Blue ring border */
+    background-color: #1a1f2c; /* Background fallback color */
+    display: flex; /* Flex alignment for emoji text */
+    align-items: center; /* Centers contents vertically */
+    justify-content: center; /* Centers contents horizontally */
+    font-size: 1.1rem; /* Emoji size */
+    overflow: hidden; /* Clips any overflowing child image edge */
+}
+
+/* Hamburger header username label */
+.nav-username-text {
+    color: #f8fafc; /* Bright text color */
+    font-weight: 600; /* Semi-bold */
+    font-size: 1.05rem; /* Text size */
+}
+
+/* Navigation links inside hamburger menu (Home, TV Shows, My Profile, Account Settings) */
+.hamburger-menu a {
+    color: #f8fafc; /* White link text */
+    padding: 12px 16px; /* Touch/click target padding */
+    text-decoration: none; /* Removes link underlines */
+    display: block; /* Spans full width of dropdown */
+    font-size: 1rem; /* Text size */
+    transition: background 0.2s, color 0.2s; /* Smooth background hover effect */
+    border-bottom: 1px solid rgba(51, 60, 81, 0.4); /* Subtle separator between links */
+}
+
+/* Removes bottom border on final list item */
+.hamburger-menu a:last-child {
+    border-bottom: none; /* Removes bottom separator on last list element */
+}
+
+/* Hover state for hamburger navigation links */
+.hamburger-menu a:hover {
+    background-color: #1e2533; /* Darkens link background on hover */
+    color: #3b82f6; /* Highlights link text blue */
+}
+
+/* ========================================== */
+/* 6. PRESET AVATARS GRID                     */
+/* ========================================== */
+
+/* Grid container for preset icon selection */
+.preset-grid {
+    display: flex; /* Flex layout */
+    flex-wrap: wrap; /* Allows icons to wrap onto new lines */
+    justify-content: center; /* Centers icons horizontally */
+    gap: 12px; /* Gap between icons */
+    max-width: 340px; /* Limits max container width */
+    margin: 0 auto; /* Centers grid inside settings card */
+}
+
+/* Individual preset avatar icon circles */
+.preset-icon {
+    width: 45px; /* Circle width */
+    height: 45px; /* Circle height matching width */
+    background-color: #1e2533; /* Dark circle background */
+    border: 2px solid #333c51; /* Subtle border line */
+    border-radius: 50%; /* Circular shape */
+    display: flex; /* Flex alignment */
+    align-items: center; /* Centers emoji vertically */
+    justify-content: center; /* Centers emoji horizontally */
+    font-size: 1.3rem; /* Emoji size */
+    cursor: pointer; /* Pointer cursor icon */
+    transition: transform 0.2s, border-color 0.2s, background-color 0.2s; /* Smooth interactive transition */
+}
+
+/* Preset icon hover interaction */
+.preset-icon:hover {
+    border-color: #3b82f6; /* Blue border on hover */
+    background-color: #283245; /* Lighter background fill */
+    transform: scale(1.1); /* Slightly enlarges icon on hover */
+}
+
+/* Currently selected active preset icon */
+.preset-icon.selected {
+    border-color: #3b82f6; /* Active blue ring */
+    background-color: #1d3557; /* Highlighted blue tint background */
+}
+
+/* ========================================== */
+/* 7. AUTHENTICATION SCREENS & FORMS          */
+/* ========================================== */
+
+/* Fullscreen viewport container for login/signup screen */
+.auth-container {
+    display: flex; /* Flex layout */
+    justify-content: center; /* Centers form horizontally */
+    align-items: center; /* Centers form vertically */
+    min-height: 100vh; /* Spans full screen height */
+    padding: 20px; /* Viewport edge padding */
+    background-color: #1a1f2c; /* Deep navy background */
+}
+
+/* Central card wrapper for login/signup form controls */
+.auth-box {
+    background-color: #252c3d; /* Card background color */
+    padding: 40px; /* Internal form padding */
+    border-radius: 12px; /* Rounded card corners */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); /* Deep drop shadow */
+    width: 100%; /* Spans full width up to max limit */
+    max-width: 540px; /* Caps maximum width */
+    text-align: center; /* Centers inner text elements */
+    border: 1px solid #333c51; /* Card border */
+}
+
+/* Auth card heading */
+.auth-box h2 {
+    margin-bottom: 20px; /* Bottom space below heading */
+    color: #f8fafc; /* Heading text color */
+    font-size: 1.4rem; /* Heading text size */
+}
+
+/* Global inputs and select box form element styling */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+select,
+textarea,
+.current-email-box {
+    width: 100%; /* Spans full width of parent form */
+    padding: 12px 15px; /* Input text internal padding */
+    background-color: #1e2533; /* Dark input fill */
+    border: 1px solid #333c51; /* Subtle input border */
+    border-radius: 6px; /* Rounded input corners */
+    color: #f8fafc; /* White typed text color */
+    font-size: 1.05rem; /* Input font size */
+    outline: none; /* Disables browser default outline ring */
+    margin-bottom: 16px; /* Vertical gap between fields */
+    transition: border-color 0.2s; /* Smooth focus border transition */
+}
+
+/* Custom dark mode formatting for date pickers */
+input[type="date"] {
+    background-color: #1e2533; /* Matches dark input background */
+    color: #f8fafc; /* Text color */
+    color-scheme: dark; /* Forces native calendar popup to use dark theme */
+}
+
+/* Focus state for active input fields */
+input:focus, select:focus, textarea:focus {
+    border-color: #3b82f6; /* Blue highlight border on active focus */
+}
+
+/* Field label titles */
+.field-label {
+    font-size: 0.95rem; /* Label text size */
+    color: #94a3b8; /* Slate grey label color */
+    display: block; /* Forces label to take own line above field */
+    margin-bottom: 4px; /* Small gap above input element */
+}
+
+/* Shortens the width of the New Username input box */
+#newUsernameInput {
+    max-width: 250px; /* Adjust this pixel value to make it shorter or longer */
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+/* ========================================== */
+/* 8. GENERAL BUTTON STYLES                   */
+/* ========================================== */
+
+/* Primary action button style */
+.btn-primary {
+    width: 100%; /* Full container width span */
+    padding: 12px; /* Button padding */
+    background-color: #3b82f6; /* Vibrant blue fill */
+    color: #ffffff; /* White text color */
+    border: none; /* No outline border */
+    border-radius: 6px; /* Rounded corners */
+    font-size: 1.05rem; /* Label size */
+    font-weight: bold; /* Bold text weight */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.2s; /* Smooth hover effect */
+    text-align: center; /* Centered label */
+    display: block; /* Block display behavior */
+    margin-bottom: 10px; /* Space below button */
+}
+
+/* Primary button hover state */
+.btn-primary:hover {
+    background-color: #2563eb; /* Darker blue shade on hover */
+}
+
+/* Text link secondary button style */
+.btn-secondary {
+    background: transparent; /* No background fill */
+    color: #94a3b8; /* Slate text color */
+    border: none; /* Removes borders */
+    font-size: 1rem; /* Text size */
+    cursor: pointer; /* Pointer cursor icon */
+    text-decoration: underline; /* Underline text decoration */
+}
+
+/* Secondary button hover state */
+.btn-secondary:hover {
+    color: #f8fafc; /* Lightens text color on hover */
+}
+
+/* Danger action button (Delete operations) */
+.btn-danger {
+    width: 100%; /* Spans full container width */
+    padding: 12px; /* Button padding */
+    background-color: #dc2626; /* Crimson red fill */
+    color: #ffffff; /* White text color */
+    border: none; /* No outline border */
+    border-radius: 6px; /* Rounded corners */
+    font-size: 1.05rem; /* Label size */
+    font-weight: bold; /* Bold text weight */
+    cursor: pointer; /* Pointer cursor icon */
+    transition: background 0.2s; /* Smooth hover transition */
+    text-align: center; /* Centered label text */
+    display: block; /* Block display behavior */
+    margin-top: 20px; /* Top spacing offset */
+}
+
+/* Danger button hover state */
+.btn-danger:hover {
+    background-color: #b91c1c; /* Darker crimson shade on hover */
+}
+
+/* ========================================== */
+/* 9. DASHBOARD APP LAYOUT & COLUMNS          */
+/* ========================================== */
+
+/* Main 3-column app dashboard layout wrapper (Unified to 1400px to match index.html) */
+.app-layout {
+    display: flex; /* Establishes horizontal flex container */
+    flex-direction: row; /* Arranges child columns in horizontal row */
+    gap: 20px; /* Spacing gap between columns */
+    padding: 25px; /* Outer layout container padding */
+    max-width: 1400px !important; /* Standardized to match home page width */
+    margin: 0 auto !important; /* Centers dashboard horizontally on screen */
+    width: 100% !important; /* Spans full available width */
+    align-items: stretch; /* Forces all columns to stretch to equal height */
+}
+
+/* Responsive breakpoint: stacks layout vertically on smaller screens & mobile viewports with ordered top placement */
+@media (max-width: 1024px) {
+    .app-layout {
+        display: flex !important; /* Maintains flexbox context */
+        flex-direction: column !important; /* Switches column row layout to vertical stack */
+        max-height: none !important; /* Removes max height constraints */
+        overflow-y: visible !important; /* Restores default document scroll behavior */
+    }
+
+    /* SceneScout Movie Search loads FIRST at the top */
+    .sidebar-middle {
+        order: 1 !important; /* Forces middle sidebar to top */
+        width: 100% !important; /* Spans full screen width */
+        max-height: none !important; /* Removes height caps */
+        overflow-y: visible !important; /* Disables inner scroll container */
+        margin-bottom: 20px; /* Adds bottom separation */
+    }
+
+    /* Recently Released Movies loads SECOND */
+    .column-left-feed {
+        order: 2 !important; /* Places left feed second */
+        width: 100% !important; /* Spans full screen width */
+        max-height: none !important; /* Removes height caps */
+        overflow-y: visible !important; /* Disables inner scroll container */
+        margin-bottom: 20px; /* Adds bottom separation */
+    }
+
+    /* Movie News & Discussions loads THIRD */
+    .column-right {
+        order: 3 !important; /* Places right feed third */
+        width: 100% !important; /* Spans full screen width */
+        max-height: none !important; /* Removes height caps */
+        overflow-y: visible !important; /* Disables inner scroll container */
+        margin-bottom: 20px; /* Adds bottom separation */
+    }
+}
+
+/* Left feed column (Recently released movies, upcoming feeds) */
+.column-left-feed {
+    flex: 1; /* Takes equal flex portion of space */
+    background-color: rgba(37, 44, 61, 0.55); /* Translucent background showing particles */
+    backdrop-filter: blur(6px); /* Adds frosted-glass blur */
+    padding: 20px; /* Internal column padding */
+    border-radius: 12px; /* Rounded column corners */
+    border: 1px solid rgba(51, 60, 81, 0.7); /* Subtle adjusted outer border */
+    max-height: 82vh; /* Caps max height to 82% of viewport height */
+    overflow-y: auto; /* Enables vertical scrolling within column container */
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Stacks column children vertically */
+}
+
+/* Section header text in left feed column */
+.column-left-feed h2 {
+    font-size: 1.5rem; /* Header font size */
+    color: #3b82f6; /* Blue text color */
+    text-align: center; /* Centered title text */
+    padding-bottom: 8px; /* Bottom padding above divider */
+    border-bottom: 1px solid #333c51; /* Bottom divider border */
+}
+
+/* Center column (Movie identification tool & daily fact) - Polished */
+.sidebar-middle {
+    width: 460px; /* Fixed width for center sidebar */
+    flex-shrink: 0; /* Prevents column from shrinking when window resizes */
+    background-color: #252c3d; /* Card background color */
+    padding: 24px; /* Balanced internal padding */
+    border-radius: 12px; /* Rounded corners */
+    border: 1px solid #333c51; /* Outer border */
+    max-height: 82vh; /* Matches height limit of left/right feed columns */
+    overflow-y: auto; /* Enables clean scrolling if content overflows */
+    display: flex; /* Flexbox alignment */
+    flex-direction: column; /* Stacks middle elements vertically */
+    gap: 16px; /* Uniform vertical spacing between internal sections */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); /* Adds subtle depth shadow */
+}
+
+/* Custom scrollbar for sidebar-middle */
+.sidebar-middle::-webkit-scrollbar {
+    width: 6px; /* Sets narrow scrollbar width */
+}
+.sidebar-middle::-webkit-scrollbar-track {
+    background: #1e2533; /* Sets scrollbar track background */
+    border-radius: 4px; /* Rounds track corners */
+}
+.sidebar-middle::-webkit-scrollbar-thumb {
+    background: #3b82f6; /* Sets scrollbar thumb color */
+    border-radius: 4px; /* Rounds thumb corners */
+}
+
+/* Center column heading */
+.sidebar-middle h2 {
+    font-size: 1.35rem; /* Clean heading proportion */
+    color: #3b82f6; /* Accent blue text color */
+    margin-bottom: 4px; /* Tight margin */
+    padding-bottom: 10px; /* Padding above divider */
+    border-bottom: 1px solid #333c51; /* Bottom divider line */
+    text-align: center; /* Centered heading text */    
+    margin-top: 25px; /* Adjust spacing as needed */
+}
+
+/* Subtext fun quote styling inside sidebar */
+.sidebar-middle #sidebarFunText {
+    text-align: center; /* Centers quote text */
+    font-size: 0.9rem; /* Smaller font size */
+    color: #94a3b8; /* Muted text color */
+    margin-bottom: 4px; /* Bottom spacing */
+    line-height: 1.4; /* Line height spacing */
+}
+
+/* Container wrapper for upload controls */
+.sidebar-middle #uploadSection {
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Stacks upload elements vertically */
+    gap: 12px; /* Gap between controls */
+}
+
+/* Polished drag-and-drop zone */
+.sidebar-middle .drop-zone {
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Vertical alignment */
+    align-items: center; /* Centers horizontally */
+    justify-content: center; /* Centers vertically */
+    border: 2px dashed #475569; /* Dashed upload border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 25px 15px; /* Internal padding */
+    text-align: center; /* Centered text */
+    cursor: pointer; /* Pointer cursor indicator */
+    background-color: #1e2533; /* Dark background fill */
+    transition: all 0.25s ease; /* Smooth hover transition */
+    margin-bottom: 0; /* Zero bottom margin */
+}
+
+.sidebar-middle .drop-zone:hover, 
+.sidebar-middle .drop-zone.drag-over {
+    border-color: #3b82f6; /* Highlights border blue on hover */
+    background-color: #283245; /* Lighter background fill on hover */
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15); /* Outer glow effect */
+}
+
+/* File name display label styling */
+.sidebar-middle #fileNameDisplay {
+    color: #cbd5e1; /* Light slate text color */
+    font-size: 0.95rem; /* Text size */
+    font-weight: 500; /* Medium weight */
+}
+
+/* Primary identify button polish inside sidebar */
+.sidebar-middle .btn-primary {
+    margin-bottom: 0; /* Zero margin */
+    padding: 12px; /* Internal padding */
+    font-size: 1rem; /* Font size */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); /* Button shadow depth */
+}
+
+/* Status and result container spacing */
+.sidebar-middle #statusContainer:not(:empty),
+.sidebar-middle #resultContainer:not(:empty) {
+    margin-top: 8px; /* Top spacing when populated */
+    padding-top: 12px; /* Top padding buffer */
+    border-top: 1px solid #333c51; /* Top divider line */
+}
+
+/* Right feed column (Movie news and discussions) */
+.column-right {
+    flex: 1; /* Takes equal flex portion */
+    background-color: rgba(37, 44, 61, 0.55); /* Translucent background */
+    backdrop-filter: blur(6px); /* Frosted blur effect */
+    padding: 20px; /* Internal padding */
+    border-radius: 12px; /* Rounded corners */
+    border: 1px solid rgba(51, 60, 81, 0.7); /* Outer border line */
+    max-height: 82vh; /* Max height cap */
+    overflow-y: auto; /* Enables scrolling */
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Vertical alignment */
+}
+
+/* Right column section header */
+.column-right h2 {
+    font-size: 1.5rem; /* Text size */
+    color: #3b82f6; /* Blue heading color */
+    text-align: center; /* Centered text */
+    padding-bottom: 8px; /* Bottom padding */
+    border-bottom: 1px solid #333c51; /* Bottom divider line */
+}
+
+/* ========================================== */
+/* 10. HOMEPAGE FEEDS SCROLLBAR STYLING ONLY  */
+/* ========================================== */
+
+/* Custom scrollbar width across feed columns */
+.column-left-feed::-webkit-scrollbar,
+.column-right::-webkit-scrollbar {
+    width: 8px; /* Width of custom scrollbar track */
+}
+
+/* Custom scrollbar background track */
+.column-left-feed::-webkit-scrollbar-track,
+.column-right::-webkit-scrollbar-track {
+    background: #1e2533; /* Dark track background color */
+    border-radius: 4px; /* Rounded track corners */
+}
+
+/* Custom scrollbar thumb draggable handle */
+.column-left-feed::-webkit-scrollbar-thumb,
+.column-right::-webkit-scrollbar-thumb {
+    background: #3b82f6; /* Blue scrollbar handle fill */
+    border-radius: 4px; /* Rounded handle corners */
+}
+
+/* Custom scrollbar handle hover effect */
+.column-left-feed::-webkit-scrollbar-thumb:hover,
+.column-right::-webkit-scrollbar-thumb:hover {
+    background: #2563eb; /* Darkens handle blue shade on hover */
+}
+
+/* ========================================== */
+/* 11. DRAG & DROP ZONE & NEWS GRID CARDS     */
+/* ========================================== */
+
+/* Screenshot file upload drag-and-drop zone */
+.drop-zone {
+    display: block; /* Block element behavior */
+    border: 2px dashed #475569; /* Dashed grey upload border line */
+    border-radius: 8px; /* Rounded corners */
+    padding: 30px 15px; /* Internal drop area padding */
+    text-align: center; /* Centered text instruction */
+    cursor: pointer; /* Pointer cursor on hover */
+    background-color: #1e2533; /* Dark background fill */
+    transition: border-color 0.2s, background-color 0.2s; /* Smooth interaction transition */
+    margin-bottom: 15px; /* Margin below drop zone */
+}
+
+/* Drop zone active drag-over state */
+.drop-zone:hover, .drop-zone.drag-over {
+    border-color: #3b82f6; /* Highlights border blue when file dragged over */
+    background-color: #283245; /* Lighter background fill when active */
+}
+
+/* Upload zone file name display label text */
+#fileNameDisplay {
+    color: #94a3b8; /* Slate grey text color */
+    font-size: 1.05rem; /* Text size */
+}
+
+/* Responsive grid layout for movie cards in feeds */
+.news-grid {
+    display: grid; /* Grid layout container */
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Responsive grid auto-filling card slots */
+    gap: 12px; /* Spacing gap between grid items */
+}
+
+/* Individual movie card styling inside feed grid */
+.news-card {
+    background-color: #1e2533; /* Dark card background */
+    padding: 12px; /* Internal card padding */
+    border-radius: 8px; /* Rounded corners */
+    border: 1px solid #333c51; /* Subtle card border line */
+    display: flex; /* Flexbox alignment */
+    flex-direction: column; /* Stacks poster, title, and buttons vertically */
+    align-items: center; /* Centers items horizontally */
+    justify-content: space-between; /* Distributes vertical space evenly inside card */
+    text-align: center; /* Centered card text */
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease; /* Smooth hover transition setup */
+    will-change: transform; /* Optimizes hardware acceleration for smoother hover scaling */
+}
+
+/* Elevated hover state with cinematic blue glow */
+.news-card:hover {
+    transform: translateY(-6px) scale(1.02); /* Lifts card upward and scales slightly */
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.25); /* Adds a radiant blue cinematic shadow glow */
+    border-color: #3b82f6; /* Brightens border to highlight interactive state */
+}
+
+/* Pulsing animation for active badges or highlights */
+@keyframes cinePulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } /* Starting normal scale and soft shadow */
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } /* Expands shadow ring outward */
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } /* Returns to resting scale */
+}
+
+/* Utility class applying the cinematic pulse animation */
+.pulsing-badge {
+    animation: cinePulse 2s infinite; /* Loops pulse animation continuously */
+}
+
+/* Card title typography */
+.news-card h4 {
+    font-size: 0.95rem; /* Title text size */
+    color: #f8fafc; /* Bright off-white text color */
+    margin-bottom: 6px; /* Space below card title */
+}
+
+/* ========================================== */
+/* 12. PROFILE PAGE & SETTINGS CARD STYLING   */
+/* ========================================== */
+
+/* Account settings page layout wrapper */
+.profile-page-container {
+    max-width: 550px; /* Limits maximum width of settings card */
+    margin: 40px auto; /* Centers card on page with top/bottom margin */
+    padding: 0 20px; /* Horizontal viewport padding */
+    width: 100%; /* Full width span */
+}
+
+/* Account settings form card container */
+.profile-settings-card {
+    background-color: #252c3d; /* Card background fill */
+    padding: 30px; /* Internal card padding */
+    border-radius: 12px; /* Rounded card corners */
+    border: 1px solid #333c51; /* Subtle border line */
+    display: flex; /* Flexbox container */
+    flex-direction: column; /* Vertical alignment */
+    align-items: center; /* Centers horizontal elements */
+    text-align: center; /* Centered text */
+}
+
+/* Settings card title heading */
+.profile-settings-card h2 {
+    color: #3b82f6; /* Accent blue text color */
+    margin-bottom: 25px; /* Bottom space below title */
+    text-align: center; /* Centered text alignment */
+    font-size: 1.5rem; /* Title font size */
+    width: 100%; /* Spans full card width */
+    border-bottom: 1px solid #333c51; /* Bottom divider border */
+    padding-bottom: 10px; /* Padding above divider */
+}
+
+/* Avatar edit container wrapper */
+.avatar-container {
+    display: flex; /* Flex alignment */
+    flex-direction: column; /* Vertical alignment */
+    align-items: center; /* Centers avatar preview horizontally */
+    justify-content: center; /* Centers avatar vertically */
+    margin: 0 auto 25px auto; /* Centered with bottom margin */
+    width: 100%; /* Full width */
+}
+
+/* Large circular avatar preview in settings screen */
+.settings-avatar {
+    width: 110px; /* Large avatar circle width */
+    height: 110px; /* Large avatar circle height */
+    border-radius: 50%; /* Perfect circle mask */
+    object-fit: cover; /* Prevents image stretching */
+    border: 3px solid #3b82f6; /* Thick blue border ring */
+    background-color: #1a1f2c; /* Background fill fallback */
+    display: flex; /* Flexbox alignment */
+    align-items: center; /* Centers contents vertically */
+    justify-content: center; /* Centers contents horizontally */
+    font-size: 3.5rem; /* Large emoji display size */
+    overflow: hidden; /* Clips overflowing child images */
+    margin: 0 auto 12px auto; /* Centered horizontally with bottom margin */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Soft shadow depth */
+}
+
+/* Avatar custom image upload button label trigger */
+.profile-upload-trigger {
+    display: inline-block; /* Inline block element behavior */
+    margin: 0 auto; /* Horizontally centered */
+    padding: 8px 16px; /* Button padding */
+    cursor: pointer; /* Pointer cursor icon */
+}
+
+/* Preset icons section wrapper */
+.preset-avatars-section {
+    width: 100%; /* Full card width span */
+    margin-bottom: 30px; /* Bottom margin offset */
+    text-align: center; /* Centered alignment */
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Stacks label and grid vertically */
+    align-items: center; /* Centers child items */
+}
+
+/* Preset section field label */
+.preset-avatars-section .field-label {
+    margin-bottom: 12px; /* Gap below label above icon grid */
+    color: #94a3b8; /* Slate grey text color */
+    font-weight: 600; /* Semi-bold weight */
+}
+
+/* Settings text input section wrapper */
+.settings-section {
+    width: 100%; /* Spans full card width */
+    text-align: left; /* Left-aligns labels and form controls */
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Stacks form rows vertically */
+    gap: 4px; /* Tight vertical gap between fields */
+}
+
+/* Field labels inside settings section */
+.settings-section .field-label {
+    margin-top: 12px; /* Top margin offset above each label */
+}
+
+/* Action button spacing inside settings section */
+.settings-section .btn-primary,
+.settings-section .btn-danger {
+    margin-top: 15px; /* Top margin offset above save/delete buttons */
+}
+
+/* Current username text heading display */
+.current-username-display {
+    color: #f8fafc; /* Bright text color */
+    margin-bottom: 16px; /* Bottom spacing */
+    font-size: 1.15rem; /* Text size */
+}
+
+/* ========================================== */
+/* 13. TV SHOWS NAV BAR LOGO CLASS            */
+/* ========================================== */
+
+/* Dedicated navigation logo wrapper override link */
+.tv-nav-logo-link {
+    display: inline-flex !important; /* Forces inline-flex container behavior */
+    align-items: center !important; /* Forces vertical centering */
+    height: auto !important; /* Automatic height calculation */
+    text-decoration: none !important; /* Enforces no underline */
+}
+
+/* Dedicated TV navigation logo image override */
+.tv-nav-logo {
+    height: 50px !important; /* Sets height for header logo */
+    width: auto !important; /* Auto scales width proportionally */
+    max-height: none !important; /* Overrides max height limits */
+    object-fit: contain !important; /* Preserves logo scaling */
+    display: block !important; /* Block element rendering */
+}
+
+/* ========================================== */
+/* 14. PROFILE HUB 3-COLUMN LAYOUT STYLING    */
+/* ========================================== */
+
+/* Top-level profile hub page container grid wrapper (Unified to 1400px to match index.html) */
+.profile-hub-layout {
+    display: flex; /* Flexbox layout container */
+    flex-direction: row; /* Aligns profile columns horizontally in a row */
+    gap: 20px; /* Horizontal spacing gap between profile columns */
+    padding: 25px; /* Outer layout container padding */
+    max-width: 1400px !important; /* Standardized to match home page width */
+    margin: 0 auto !important; /* Centers layout on screen */
+    width: 100% !important; /* Spans full available width */
+    align-items: flex-start; /* Keeps columns aligned flush to top edge */
+}
+
+/* Left Column: User Identity, Bio, Friends, and Favorite Genres */
+.profile-col-left {
+    width: 320px; /* Fixed horizontal width for identity sidebar */
+    flex-shrink: 0; /* Prevents column from squishing on resize */
+    display: flex; /* Flexbox container */
+    flex-direction: column; /* Stacks section cards vertically */
+    gap: 20px !important; /* Vertical gap between stacked cards */
+}
+
+/* Middle Column: Favorite Movies/Shows and Rating Input Form */
+.profile-col-middle {
+    flex: 1; /* Shares remaining flexible page space equally with right column */
+    display: flex; /* Flexbox container */
+    flex-direction: column; /* Stacks section cards vertically */
+    gap: 20px !important; /* Vertical gap between cards */
+}
+
+/* Right Column: Recommendations and Rated History Log */
+.profile-col-right {
+    flex: 1; /* Shares remaining flexible page space equally with middle column */
+    display: flex; /* Flexbox container */
+    flex-direction: column; /* Stacks section cards vertically */
+    gap: 20px !important; /* Vertical gap between cards */
+}
+
+/* Generic card container styling across all profile cards */
+.profile-section-card {
+    background-color: #252c3d; /* Dark card background fill */
+    padding: 20px; /* Internal card padding */
+    border-radius: 12px; /* Rounded card corners */
+    border: 1px solid #333c51; /* Card outer border line */
+    margin-bottom: 0 !important; /* Resets default bottom margin in favor of column gaps */
+}
+
+/* Header typography for profile cards */
+.profile-section-card h3 {
+    font-size: 1.25rem; /* Section title size */
+    color: #3b82f6; /* Blue section title color */
+    margin-bottom: 15px; /* Gap below section title */
+    padding-bottom: 6px; /* Padding above title divider */
+    border-bottom: 1px solid #333c51; /* Title bottom divider border line */
+}
+
+/* Responsive breakpoint: stacks profile hub columns vertically on mobile viewports */
+@media (max-width: 1100px) {
+    .profile-hub-layout {
+        flex-direction: column; /* Switches 3-column row layout to a single vertical column */
+    }
+    .profile-col-left, .profile-col-middle, .profile-col-right {
+        width: 100%; /* Forces all 3 columns to span full screen width */
+    }
+}
+
+/* ========================================== */
+/* 15. EXTRA REFACTORED PROFILE PAGE CLASSES  */
+/* ========================================== */
+
+/* User identity card text positioning */
+.profile-identity-card {
+    text-align: center; /* Centers profile avatar, name, and bio */
+}
+
+/* Hub avatar preview circle container */
+.hub-avatar-container {
+    margin: 0 auto 10px auto; /* Centered horizontally with bottom margin */
+    display: flex; /* Flexbox alignment */
+    align-items: center; /* Vertically centers content */
+    justify-content: center; /* Horizontally centers content */
+    font-size: 3rem; /* Avatar emoji display size */
+}
+
+/* User custom image avatar styling */
+.hub-avatar-img {
+    width: 100%; /* Fills avatar circle width */
+    height: 100%; /* Fills avatar circle height */
+    border-radius: 50%; /* Circle clip mask */
+    object-fit: cover; /* Prevents aspect ratio distortion */
+}
+
+/* Profile hub display username */
+.profile-username {
+    color: #f8fafc; /* Bright off-white color */
+    margin-bottom: 4px; /* Space below username */
+}
+
+/* Profile hub bio text display block */
+.profile-bio-display {
+    font-size: 0.9rem; /* Bio font size */
+    color: #f8fafc; /* Text color */
+    font-style: italic; /* Italicized text style */
+    margin-bottom: 12px; /* Margin below bio display */
+    display: none; /* Hidden until bio data exists in storage */
+}
+
+/* Update bio form input wrapper */
+.bio-input-wrapper {
+    text-align: left; /* Left-aligns update bio label */
+    border-top: 1px solid #333c51; /* Divider above bio edit section */
+    padding-top: 12px; /* Padding above input field */
+}
+
+/* Bio save button style */
+.bio-save-btn {
+    padding: 6px; /* Compact padding */
+    font-size: 0.85rem; /* Smaller button font size */
+}
+
+/* Section card subtitle text */
+.section-subtitle {
+    font-size: 0.85rem; /* Subtitle font size */
+    color: #aaa; /* Grey text color */
+    margin-bottom: 10px; /* Space below subtitle */
+}
+
+/* Horizontal input row layout container */
+.input-group-row {
+    display: flex; /* Flexbox row layout */
+    gap: 8px; /* Gap between input box and add button */
+    margin-bottom: 12px; /* Bottom margin offset */
+}
+
+/* Reset margin helper utility class */
+.no-margin {
+    margin-bottom: 0 !important; /* Overrides default input bottom margins */
+}
+
+/* Auto width button helper utility class */
+.btn-auto-width {
+    width: auto !important; /* Allows button width to snap to its content */
+    padding: 0 15px !important; /* Side padding for compact buttons */
+}
+
+/* Friends list display box */
+.friends-list-box {
+    background: #1e2533; /* Dark background fill */
+    padding: 10px; /* Internal box padding */
+    border-radius: 6px; /* Rounded corners */
+    min-height: 80px; /* Fixed minimum box height */
+    font-size: 0.9rem; /* Text size */
+    color: #cbd5e1; /* Light slate text color */
+}
+
+/* Favorite genres badge tags flex wrapper */
+.genre-tags-wrapper {
+    display: flex; /* Flexbox container */
+    flex-wrap: wrap; /* Wraps badges onto new lines */
+    gap: 8px; /* Spacing gap between genre tags */
+    margin-top: 10px; /* Top margin offset */
+}
+
+/* Stacked form input grouping */
+.stacked-input-group {
+    display: flex; /* Flex container */
+    flex-direction: column; /* Vertical layout */
+    gap: 8px; /* Gap between form inputs */
+    margin-bottom: 15px; /* Margin below input group */
+}
+
+/* Media type dropdown select box sizing */
+.type-select-dropdown {
+    width: 140px; /* Fixed width for Movie/TV Show dropdown */
+}
+
+/* File upload row styling for custom posters */
+.file-upload-row {
+    display: flex; /* Flexbox row alignment */
+    justify-content: space-between; /* Spreads label and file input to opposite sides */
+    align-items: center; /* Vertically centers text and input */
+    background: #1e2533; /* Dark background fill */
+    padding: 8px 12px; /* Row internal padding */
+    border-radius: 6px; /* Rounded corners */
+    border: 1px solid #333c51; /* Outer border line */
+}
+
+/* File upload prompt label */
+.file-upload-label {
+    font-size: 0.85rem; /* Label font size */
+    color: #94a3b8; /* Slate grey text color */
+}
+
+/* Hidden image file chooser input */
+.file-input-hidden {
+    font-size: 0.8rem; /* Input font size */
+    color: #cbd5e1; /* Text color */
+    width: auto; /* Auto width */
+}
+
+/* Sub-section header typography inside cards */
+.sub-section-header {
+    font-size: 0.95rem; /* Header font size */
+    color: #3b82f6; /* Accent blue color */
+    margin-bottom: 8px; /* Space below header */
+    border-top: 1px solid #333c51; /* Top divider line */
+    padding-top: 12px; /* Top padding above text */
+}
+
+/* Spacing utility for custom feed grids */
+.custom-grid-spacing {
+    margin-bottom: 15px; /* Bottom spacing between subsections */
+}
+
+/* Empty list notice placeholder text */
+.empty-list-notice {
+    font-size: 0.85rem; /* Notice text size */
+    color: #aaa; /* Muted grey color */
+    grid-column: span 2; /* Spans notice across grid columns */
+}
+
+/* Form input spacing helper utility */
+.input-spacer {
+    margin-bottom: 10px !important; /* Applies uniform bottom margin */
+}
+
+/* Logged ratings history scrollable container */
+.rated-log-container {
+    display: flex; /* Flexbox container */
+    flex-direction: column; /* Stacks review cards vertically */
+    gap: 10px; /* Spacing gap between review cards */
+    max-height: 350px; /* Limits maximum box height */
+    overflow-y: auto; /* Enables vertical scrolling for long history logs */
+}
+
+/* Empty logbook notice placeholder */
+.empty-log-notice {
+    font-size: 0.85rem; /* Text size */
+    color: #aaa; /* Muted text color */
+    text-align: center; /* Centered notice text */
+    padding: 15px; /* Notice box padding */
+}
+
+/* Relative anchor wrapper for delete buttons on profile cards */
+.profile-card-relative {
+    position: relative; /* Serves as anchor for absolute delete button positioning */
+}
+
+/* Absolute positioned delete button ('X') on cards */
+.profile-card-relative .card-delete-btn {
+    position: absolute; /* Takes button out of layout flow */
+    top: 6px; /* Offsets 6px from top edge of card */
+    right: 6px; /* Offsets 6px from right edge of card */
+    background: rgba(220, 38, 38, 0.8); /* Red translucent fill */
+    color: white; /* White icon color */
+    border: none; /* Removes outline border */
+    border-radius: 50%; /* Perfect circle shape */
+    width: 22px; /* Circle width */
+    height: 22px; /* Circle height */
+    font-size: 0.75rem; /* Icon size */
+    cursor: pointer; /* Pointer cursor icon */
+    display: flex; /* Flex alignment */
+    align-items: center; /* Centers 'X' vertically */
+    justify-content: center; /* Centers 'X' horizontally */
+}
+
+/* ========================================== */
+/* 16. PROPER UN-CROPPED SIZING FOR CUSTOM POSTERS */
+/* ========================================== */
+
+/* Un-cropped poster image rendering inside profile cards */
+.card-poster-img {
+    width: 100%; /* Expands to full card width */
+    height: auto; /* Scales height automatically based on aspect ratio */
+    max-height: 160px; /* Caps maximum vertical poster height */
+    object-fit: contain; /* Displays full image without cropping edges */
+    border-radius: 4px; /* Rounded poster corners */
+    margin-bottom: 6px; /* Space below poster image */
+    background-color: #111827; /* Dark background fill behind letterboxed posters */
+}
+
+/* Fallback emoji icon container when no custom poster uploaded */
+.card-fallback-icon {
+    font-size: 2rem; /* Fallback emoji display size */
+    margin-bottom: 4px; /* Bottom space */
+    display: flex; /* Flex container */
+    justify-content: center; /* Centers emoji horizontally */
+    align-items: center; /* Centers emoji vertically */
+}
+
+/* Card title typography */
+.card-title-text {
+    font-weight: bold; /* Bold text weight */
+    font-size: 0.85rem; /* Text size */
+    color: #f8fafc; /* Bright text color */
+    text-align: center; /* Centered card title */
+}
+
+/* Selected favorite genre pill tag badge */
+.genre-tag-badge {
+    background: #1d3557; /* Dark blue pill background */
+    color: #3b82f6; /* Accent blue text color */
+    padding: 6px 12px; /* Pill internal padding */
+    border-radius: 15px; /* Pill rounded shape */
+    font-size: 0.8rem; /* Text size */
+    font-weight: bold; /* Bold text weight */
+    border: 1px solid #333c51; /* Subtle border line */
+    display: inline-flex; /* Inline flexbox alignment */
+    align-items: center; /* Vertically centers text and delete button */
+    gap: 6px; /* Gap between genre name and 'X' */
+}
+
+/* Delete 'X' icon inside genre tag badge */
+.genre-delete-x {
+    cursor: pointer; /* Pointer cursor icon */
+    color: #ff4d4d; /* Bright red color */
+    font-size: 0.7rem; /* Icon size */
+}
+
+/* Added friend row container */
+.friend-item-row {
+    display: flex; /* Flexbox alignment */
+    justify-content: space-between; /* Spreads friend name and status to opposite sides */
+    align-items: center; /* Vertically centers items in row */
+    padding: 6px 0; /* Vertical padding */
+    border-bottom: 1px solid #333c51; /* Divider line between friends */
+}
+
+/* Right-side badge grouping inside friend row */
+.friend-badge-group {
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Vertically centers status text and delete 'X' */
+    gap: 10px; /* Gap between status text and delete button */
+}
+
+/* Active friend status text label */
+.friend-status-text {
+    color: #4bb543; /* Green confirmation text color */
+    font-size: 0.75rem; /* Text size */
+    font-weight: bold; /* Bold text weight */
+}
+
+/* Delete friend connection 'X' icon */
+.friend-delete-x {
+    cursor: pointer; /* Pointer cursor */
+    color: #ff4d4d; /* Red color */
+    font-size: 0.80rem; /* Icon size */
+}
+
+/* Individual logged rating history card box */
+.rated-log-card {
+    background: #1e2533; /* Dark background fill */
+    padding: 10px; /* Internal card padding */
+    border-radius: 6px; /* Rounded corners */
+    border-left: 3px solid #3b82f6; /* Left accent blue border stripe */
+}
+
+/* Title text inside logged rating card */
+.rated-card-title {
+    font-weight: bold; /* Bold title text */
+    font-size: 0.95rem; /* Title text size */
+    color: #f8fafc; /* Bright text color */
+    padding-right: 20px; /* Padding to prevent title overlapping delete button */
+}
+
+/* Star rating display inside logged review card */
+.rated-card-stars {
+    color: #fbbf24; /* Amber yellow star color */
+    font-size: 0.9rem; /* Star icon size */
+    margin: 2px 0; /* Vertical margin spacing */
+}
+
+/* User mini-review text inside logged rating card */
+.rated-card-review {
+    font-size: 0.8rem; /* Review text size */
+    color: #aaa; /* Light grey review text color */
+    margin-top: 4px; /* Space above review comment */
+}
+
+/* ========================================== */
+/* 17. FORUM & NEWS LINK STYLING              */
+/* ========================================== */
+
+/* Custom forum link red override style */
+.forum-link {
+    color: #dc2626 !important; /* Forces red link color */
+    text-decoration: none !important; /* Enforces no text underline */
+}
+
+/* Forum link hover state override */
+.forum-link:hover {
+    color: #ef4444 !important; /* Lightens red on hover */
+    text-decoration: none !important; /* Keeps no underline */
+}
+
+/* ========================================== */
+/* 18. HOMEPAGE FEED POSTER IMAGE SIZING      */
+/* ========================================== */
+
+/* Homepage left/right feed poster image constraints */
+.column-left-feed .news-card img,
+.column-right .news-card img {
+    width: 100%; /* Spans full card width */
+    height: 230px; /* Fixed height for homepage feed posters */
+    border-radius: 6px; /* Rounded poster corners */
+    margin-bottom: 8px; /* Margin below image */
+    object-fit: cover; /* Crops image neatly to fill poster dimensions */
+}
+
+/* ========================================== */
+/* 19. IDENTIFIED MOVIE RESULT CARD & POSTER  */
+/* ========================================== */
+
+/* Result card container displaying identified movie output */
+.result-card {
+    background-color: #1e2533; /* Dark result card fill */
+    padding: 20px; /* Internal card padding */
+    border-radius: 8px; /* Rounded corners */
+    margin-top: 15px; /* Margin above result card */
+    margin-bottom: 15px; /* Margin below result card */
+    border: 1px solid #333c51; /* Subtle border line */
+    display: flex; /* Flexbox container */
+    flex-direction: column; /* Vertical layout */
+    align-items: center; /* Horizontally centers content */
+    text-align: center; /* Centered card text */
+}
+
+/* Identified movie poster image display */
+.result-card .poster {
+    width: 100%; /* Spans parent width up to max boundary */
+    max-width: 240px; /* Caps max width of poster */
+    height: auto; /* Automatic height scaling */
+    max-height: 340px; /* Caps max vertical height */
+    object-fit: contain; /* Displays full image without cropping */
+    border-radius: 6px; /* Rounded poster corners */
+    margin-bottom: 15px; /* Space below poster */
+    display: block; /* Block element display */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Deep drop shadow */
+}
+
+/* Identified movie title heading */
+.result-card .movie-title {
+    font-size: 1.3rem; /* Title font size */
+    font-weight: bold; /* Bold text weight */
+    color: #3b82f6; /* Accent blue color */
+    margin-bottom: 6px; /* Bottom space */
+    text-align: center; /* Centered alignment */
+}
+
+/* Identified movie release date text */
+.result-card .release-date {
+    font-size: 0.95rem; /* Text size */
+    color: #94a3b8; /* Slate grey color */
+    margin-bottom: 15px; /* Space below release date */
+}
+
+/* Section detail labels inside result card (Plot Overview, Cast, etc.) */
+.result-card .info-label {
+    font-size: 0.95rem; /* Label size */
+    font-weight: bold; /* Bold text weight */
+    color: #94a3b8; /* Slate grey color */
+    margin-top: 12px; /* Top space above label */
+    margin-bottom: 4px; /* Space below label */
+    width: 100%; /* Spans full card width */
+    text-align: left; /* Left aligns section label */
+}
+
+/* Detailed description text inside result card */
+.result-card .info-text {
+    font-size: 1.02rem; /* Body text size */
+    color: #cbd5e1; /* Off-white text color */
+    line-height: 1.4; /* Expanded line height for readability */
+    width: 100%; /* Spans full card width */
+    text-align: left; /* Left aligns paragraph text */
+}
+
+/* ========================================== */
+/* 20. MISC SPACING & LAYOUT HELPERS          */
+/* ========================================== */
+
+/* Subtext fun quote spacing */
+#sidebarFunText {
+    margin-bottom: 20px; /* Space below sidebar subtext */
+}
+
+/* Analyzing modal animated loading quotes styling */
+#loadingQuotes {
+    display: block !important; /* Forces block display */
+    text-align: center !important; /* Centers quote text */
+    font-size: 0.85rem !important; /* Text size */
+    color: #94a3b8 !important; /* Slate grey color */
+    font-weight: normal !important; /* Normal text weight */
+    margin-top: 12px !important; /* Top margin offset */
+    width: 100% !important; /* Spans full modal width */
+    white-space: nowrap !important; /* Prevents text wrapping */
+    overflow: hidden !important; /* Hides overflow text */
+    text-overflow: ellipsis !important; /* Adds trailing "..." if quote overflows */
+}
+
+/* Feed column heading margin utility */
+.column-left-feed h2,
+.column-right h2 {
+    margin-bottom: 15px !important; /* Bottom margin below main feed headers */
+}
+
+/* Spacing between multiple stacked grids inside feed columns */
+.column-left-feed h2 + .news-grid + h2,
+.column-right h2 + .news-grid + h2 {
+    margin-top: 30px !important; /* Margin above secondary section headers */
+}
+
+/* ========================================== */
+/* 21. IDENTIFYING & RESULT MODAL POPUP STYLES */
+/* ========================================== */
+
+/* Fullscreen semi-transparent backdrop overlay for popup modal */
+.modal-overlay {
+    position: fixed; /* Fixes modal over full viewport */
+    top: 0; /* Flush to top viewport edge */
+    left: 0; /* Flush to left viewport edge */
+    width: 100vw; /* Covers 100% of screen width */
+    height: 100vh; /* Covers 100% of screen height */
+    background-color: rgba(0, 0, 0, 0.75); /* Dark semi-transparent black overlay */
+    display: flex; /* Flexbox container */
+    justify-content: center; /* Centers modal card horizontally */
+    align-items: center; /* Centers modal card vertically */
+    z-index: 1000; /* Keeps modal above all other page content */
+    padding: 20px; /* Outer viewport padding */
+}
+
+/* Modal content container box */
+.modal-content {
+    background-color: #252c3d; /* Dark slate card background fill */
+    padding: 30px 25px 25px 25px; /* Internal card padding */
+    border-radius: 12px; /* Rounded card corners */
+    border: 1px solid #333c51; /* Outer border line */
+    text-align: center; /* Centered content alignment */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); /* Deep ambient drop shadow */
+    max-width: 460px; /* Maximum horizontal width */
+    width: 100%; /* Full available width span */
+    max-height: 85vh; /* Caps maximum height to 85% of screen height */
+    display: flex; /* Flexbox alignment */
+    flex-direction: column; /* Stacks header bar and modal body vertically */
+    position: relative; /* Serves as position anchor */
+}
+
+/* Top header bar inside modal window */
+.modal-header-bar {
+    position: relative; /* Anchor for close button */
+    width: 100%; /* Spans full width */
+    height: 20px; /* Fixed height for top close bar */
+    margin-bottom: 10px; /* Space below header bar */
+    flex-shrink: 0; /* Prevents header bar from shrinking */
+}
+
+/* Modal top close 'X' button */
+.modal-content .card-delete-btn {
+    position: absolute; /* Takes button out of document flow */
+    top: -5px; /* Offsets slightly above content area */
+    right: -5px; /* Offsets slightly right of content area */
+    background: rgba(220, 38, 38, 0.9); /* Red background fill */
+    color: white; /* White 'X' icon color */
+    border: none; /* Removes outline border */
+    border-radius: 50%; /* Perfect circle button shape */
+    width: 28px; /* Button width */
+    height: 28px; /* Button height */
+    font-size: 0.9rem; /* Icon font size */
+    cursor: pointer; /* Pointer cursor icon */
+    display: flex; /* Flex alignment */
+    align-items: center; /* Centers 'X' vertically */
+    justify-content: center; /* Centers 'X' horizontally */
+    z-index: 10; /* Positioned above modal content */
+    transition: background 0.2s; /* Smooth hover transition */
+}
+
+/* Modal close button hover state */
+.modal-content .card-delete-btn:hover {
+    background: rgb(220, 38, 38); /* Solid red fill on hover */
+}
+
+/* Scrollable body content container inside popup modal */
+#modalBody {
+    overflow-y: auto; /* Enables vertical scrolling when content exceeds modal height */
+    max-height: calc(85vh - 70px); /* Calculates scrollable height subtracting header padding */
+    padding-right: 5px; /* Internal right padding offset for scrollbar space */
+    text-align: center; /* Centered body text */
+}
+
+/* Custom scrollbar width inside popup modal body */
+#modalBody::-webkit-scrollbar {
+    width: 6px; /* Width of modal scrollbar */
+}
+
+/* Custom scrollbar track inside popup modal body */
+#modalBody::-webkit-scrollbar-track {
+    background: #1e2533; /* Dark scrollbar track color */
+    border-radius: 4px; /* Rounded track corners */
+}
+
+/* Custom scrollbar thumb draggable handle inside modal body */
+#modalBody::-webkit-scrollbar-thumb {
+    background: #3b82f6; /* Blue scrollbar handle fill */
+    border-radius: 4px; /* Rounded handle corners */
+}
+
+/* ========================================== */
+/* 22. CUSTOM SCROLLBAR STYLING FOR TV SHOWS  */
+/* ========================================== */
+
+/* Firefox standard scrollbar rules for TV show feeds */
+.custom-scroll-feed {
+    scrollbar-width: thin; /* Sets thin scrollbar width */
+    scrollbar-color: #3b82f6 #1e2533; /* Sets thumb color and track color */
+}
+
+/* WebKit custom scrollbar width for TV shows feed */
+.custom-scroll-feed::-webkit-scrollbar {
+    width: 8px; /* Scrollbar width */
+}
+
+/* WebKit custom scrollbar track for TV shows feed */
+.custom-scroll-feed::-webkit-scrollbar-track {
+    background: #1e2533; /* Dark background track color */
+    border-radius: 4px; /* Rounded track corners */
+}
+
+/* WebKit custom scrollbar draggable handle for TV shows feed */
+.custom-scroll-feed::-webkit-scrollbar-thumb {
+    background: #3b82f6; /* Blue handle fill */
+    border-radius: 4px; /* Rounded handle corners */
+}
+
+/* WebKit custom scrollbar handle hover state for TV shows feed */
+.custom-scroll-feed::-webkit-scrollbar-thumb:hover {
+    background: #2563eb; /* Darker blue shade on hover */
+}
+
+/* ========================================== */
+/* 23. HAMBURGER MENU & RESPONSIVE LOGOUT      */
+/* ========================================== */
+
+/* Hamburger menu container wrapper */
+.hamburger-menu-container {
+    display: inline-block; /* Inline block display */
+    position: relative; /* Relative anchor positioning */
+}
+
+/* Default state for the hamburger button (Desktop: shows profile pic + username) */
+.hamburger-btn {
+    background-color: #1e2533; /* Dark button background */
+    border: 1px solid #333c51; /* Subtle border line */
+    color: #f8fafc; /* Text/icon color */
+    padding: 6px 14px; /* Internal button padding */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor icon */
+    display: flex; /* Flexbox alignment */
+    align-items: center; /* Vertically centers children */
+    gap: 10px; /* Gap between profile pic and username/icon */
+    transition: background 0.2s, border-color 0.2s; /* Smooth interaction transition */
+}
+
+/* Hamburger button hover state */
+.hamburger-btn:hover {
+    background-color: #283245; /* Lighter background fill on hover */
+    border-color: #3b82f6; /* Blue border highlight */
+}
+
+/* Show profile view inside the button on desktop */
+.desktop-nav-profile {
+    display: flex; /* Flex layout */
+    align-items: center; /* Centers avatar and name vertically */
+    gap: 8px; /* Gap between avatar and name */
+}
+
+/* Hide the raw '☰' icon on desktop */
+.mobile-hamburger-icon {
+    display: none; /* Hidden on desktop screens */
+    font-size: 1.3rem; /* Icon font size */
+}
+
+/* Hide the mascot speech bubble / fact of the day on mobile and smaller screens */
+@media (max-width: 1024px) {
+    .mascot-speech-bubble {
+        display: none !important; /* Hides mascot speech bubble on tablets and mobiles */
+    }
+}
+
+/* Mobile & Tablet adjustments (screens below 1024px) */
+@media (max-width: 1024px) {
+    /* Hide the expanded profile preview inside the button on mobile */
+    .desktop-nav-profile {
+        display: none; /* Hides desktop profile preview */
+    }
+    
+    /* Show the '☰' hamburger icon on mobile */
+    .mobile-hamburger-icon {
+        display: inline-block; /* Displays hamburger icon on smaller screens */
+    }
+
+    /* Adjust button padding for mobile icon */
+    .hamburger-btn {
+        padding: 6px 12px; /* Compact mobile button padding */
+    }
+}
+
+/* By default, show the header logout button and hide the dropdown logout link */
+.mobile-logout-link {
+    display: none; /* Hidden by default on desktop */
+}
+
+/* On mobile screens (below 1024px), swap them */
+@media (max-width: 1024px) {
+    /* Hide the standalone logout button in the top navigation */
+    .header-logout-btn {
+        display: none !important; /* Hides standalone header logout button */
+    }
+    
+    /* Show the Log Out option inside the hamburger dropdown menu */
+    .mobile-logout-link {
+        display: block !important; /* Displays log out link inside mobile dropdown */
+        color: #ef4444; /* Clean reddish highlight color for log out */
+        font-weight: bold; /* Bold text weight */
+        border-top: 1px solid #333c51; /* Top divider line separator */
+        padding-top: 10px; /* Top internal padding */
+        margin-top: 5px; /* Top spacing offset */
+    }
+}
+
+/* ========================================== */
+/* 24. HIDE TOP NAV LOGO ON MOBILE & TABLET   */
+/* ========================================== */
+@media (max-width: 1024px) {
+    .nav-left-group .tv-nav-logo-link {
+        display: none !important; /* Hides top navigation logo on mobile/tablet viewports */
+    }
+}
+
+/* ========================================== */
+/* 25. FULL SINGLE-LINE RESPONSIVE HEADERS   */
+/* ========================================== */
+
+/* Ensures header titles across all pages scale smoothly to fit completely on one line without truncation */
+@media (max-width: 1400px) {
+    .combined-fact-nav-card {
+        padding: 12px 15px !important; /* Compact internal header padding */
+        gap: 10px !important; /* Reduced flex gap */
+    }
+
+    .combined-fact-center-content .nav-fun-text {
+        font-size: clamp(0.65rem, 1.1vw, 1.05rem) !important; /* Scales fluidly down without cutting off text */
+        white-space: nowrap !important; /* Forces single line text */
+        overflow: visible !important; /* Prevents text clipping */
+        text-overflow: clip !important; /* Removes trailing dots (...) */
+    }
+}
+
+/* ========================================== */
+/* 26. RESPONSIVE PROFILE HUB (MOBILE STACK)  */
+/* ========================================== */
+@media (max-width: 768px) {
+    /* Only stack vertically on smaller mobile phones */
+    .profile-hub-top-card {
+        grid-template-columns: 1fr !important; /* Single column grid stack */
+        gap: 20px !important; /* Gap between stacked cards */
+    }
+    .profile-hub-top-card > div {
+        border-right: none !important; /* Removes vertical borders on mobile */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Adds bottom horizontal divider line */
+        padding-right: 0 !important; /* Resets right padding */
+        padding-left: 0 !important; /* Resets left padding */
+        padding-bottom: 20px; /* Bottom padding buffer */
+    }
+    .profile-hub-top-card > div:last-child {
+        border-bottom: none; /* Removes bottom border on final card */
+        padding-bottom: 0; /* Resets bottom padding */
+    }
+    .profile-bottom-row {
+        grid-template-columns: 1fr !important; /* Stacks bottom profile row into single column */
+    }
+}
+
+/* Forces action buttons to line up in 3 equal columns */
+.settings-action-row {
+    display: grid !important; /* Grid layout container */
+    grid-template-columns: 1fr 1fr 1fr !important; /* Three equal columns */
+    gap: 10px !important; /* Gap between grid action buttons */
+    width: 100% !important; /* Spans full container width */
+    margin-top: 20px !important; /* Top margin offset */
+}
+
+.settings-action-row button {
+    width: 100% !important; /* Spans full button grid cell width */
+    margin: 0 !important; /* Resets button margins */
+}
+
+/* ========================================== */
+/* 27. INDEX.HTML SPECIFIC CLEANUP CLASSES    */
+/* ========================================== */
+.auth-email-hidden {
+    display: none; /* Utility class to hide email auth fields */
+}
+
+.auth-btn-row {
+    display: flex; /* Flex row layout */
+    justify-content: space-between; /* Spreads buttons to opposite sides */
+    align-items: center; /* Vertically centers row items */
+}
+
+.auth-section-hidden {
+    display: none; /* Utility class to hide auth sections */
+}
+
+.auth-notice-text {
+    font-size: 0.9rem; /* Notice text font size */
+    color: #ccc; /* Light grey text color */
+    margin-bottom: 15px; /* Bottom space */
+}
+
+.auth-back-btn {
+    margin-top: 10px; /* Top margin offset for back buttons */
+}
+
+.mfa-code-input {
+    text-align: center; /* Centers verification code characters */
+    font-size: 1.2rem; /* Larger font size */
+    letter-spacing: 4px; /* Wide letter spacing */
+}
+
+.auth-message-text {
+    color: #ff4d4d; /* Red error text color */
+    margin-top: 15px; /* Top spacing */
+}
+
+.dashboard-screen-hidden {
+    display: none; /* Utility class to hide dashboard screen */
+}
+
+.index-nav-left {
+    display: flex; /* Flex layout */
+    align-items: center; /* Vertically centers left items */
+    gap: 15px; /* Gap between elements */
+    flex: 1.2; /* Flex portion ratio */
+    text-align: left; /* Left-aligns text */
+}
+
+.index-logo-link {
+    flex-shrink: 0; /* Prevents logo link from shrinking */
+}
+
+.index-nav-logo-img {
+    height: 50px; /* Fixed logo height */
+    width: auto; /* Proportional width scaling */
+}
+
+.mascot-speech-bubble {
+    background-color: #1e2533; /* Dark speech bubble background */
+    border: 1px solid #333c51; /* Subtle bubble border */
+    border-radius: 12px; /* Rounded corners */
+    padding: 10px 14px; /* Internal bubble padding */
+    position: relative; /* Relative position anchor */
+    max-width: 320px; /* Maximum bubble width boundary */
+}
+
+.mascot-title {
+    font-size: 0.85rem; /* Title font size */
+    color: #3b82f6; /* Accent blue title color */
+    margin-bottom: 2px; /* Bottom space */
+}
+
+.fact-text-content {
+    font-size: 0.8rem; /* Fact body text size */
+    color: #cbd5e1; /* Slate text color */
+    line-height: 1.2; /* Tight line height */
+}
+
+.index-center-content {
+    padding: 0; /* Zero internal padding */
+}
+
+.index-nav-right {
+    flex: 1; /* Flex share ratio */
+    display: flex; /* Flex layout */
+    justify-content: flex-end; /* Right-aligns navigation controls */
+    align-items: center; /* Vertically centers right items */
+    gap: 12px; /* Gap between right control items */
+}
+
+.index-app-layout {
+    max-width: 1400px; /* Maximum layout boundary width */
+    margin: 0 auto; /* Horizontally centers layout container */
+}
+
+.sidebar-fun-text {
+    text-align: center; /* Centered subtext alignment */
+    font-size: 0.85rem; /* Subtext font size */
+    color: #94a3b8; /* Slate grey text color */
+}
+
+.modal-overlay-hidden {
+    display: none; /* Utility class to hide modal overlays */
+}
+
+.modal-analyzing-title {
+    color: #3b82f6; /* Accent blue title color */
+    margin-bottom: 10px; /* Space below title */
+    margin-top: 12px; /* Space above title */
+}
+
+/* ========================================== */
+/* 28. PROFILE.HTML SPECIFIC CLEANUP CLASSES  */
+/* ========================================== */
+.profile-hub-container-flex {
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Vertical stacking */
+    gap: 20px; /* Gap between containers */
+}
+
+.profile-hub-top-card {
+    display: grid; /* Grid layout container */
+    grid-template-columns: repeat(3, 1fr); /* Three equal grid columns */
+    gap: 25px; /* Gap between grid items */
+    align-items: start; /* Aligns items to top */
+    margin-bottom: 0; /* Zero bottom margin */
+}
+
+.profile-identity-column {
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Vertical column layout */
+    align-items: center; /* Centers profile elements horizontally */
+    text-align: center; /* Centered text alignment */
+    border-right: 1px solid rgba(255, 255, 255, 0.1); /* Right column divider line */
+    padding-right: 20px; /* Right padding offset */
+}
+
+.bio-label-align {
+    text-align: left; /* Left-aligns bio label */
+}
+
+.profile-friends-column {
+    border-right: 1px solid rgba(255, 255, 255, 0.1); /* Right column divider line */
+    padding-right: 20px; /* Right padding offset */
+    padding-left: 5px; /* Left padding buffer */
+}
+
+.profile-card-title-reset {
+    margin-top: 0; /* Resets top card margin */
+}
+
+.friends-box-scroll {
+    max-height: 150px; /* Limits friends list container height */
+    overflow-y: auto; /* Enables vertical scrolling for long friends list */
+}
+
+.profile-genre-column {
+    padding-left: 5px; /* Left padding buffer */
+}
+
+.genre-tags-scroll {
+    max-height: 150px; /* Limits genre tags container height */
+    overflow-y: auto; /* Enables vertical scrolling for long genre lists */
+    margin-top: 15px; /* Top margin offset */
+}
+
+.profile-bottom-row {
+    display: grid; /* Grid layout container */
+    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
+    gap: 20px; /* Gap between grid items */
+}
+
+.profile-card-reset {
+    margin-bottom: 0; /* Resets card bottom margins */
+}
+
+.profile-file-row-cursor {
+    cursor: pointer; /* Pointer cursor indicator */
+}
+
+.profile-hidden-input {
+    display: none; /* Utility class to hide native file inputs */
+}
+
+.profile-subheader-space {
+    margin-top: 25px; /* Top spacing offset for profile subheaders */
+}
+
+/* ========================================== */
+/* 29. TVSHOWS.HTML SPECIFIC CLEANUP CLASSES  */
+/* ========================================== */
+.tvshows-banner-wrapper {
+    max-width: 1400px; /* Maximum banner wrapper width */
+    padding: 0 25px; /* Horizontal viewport padding */
+    margin: 20px auto 0 auto; /* Centers banner wrapper with top spacing */
+}
+
+.tvshows-center-pad {
+    padding: 0; /* Zero internal padding */
+}
+
+.tvshows-welcome-text {
+    position: static; /* Static positioning */
+    transform: none; /* Clears transforms */
+    width: 100%; /* Spans full width */
+}
+
+.tvshows-main-layout {
+    display: flex; /* Flex layout container */
+    flex-direction: column; /* Vertical stacking */
+    gap: 25px; /* Gap between main sections */
+    padding: 25px; /* Outer layout padding */
+    max-width: 1400px; /* Maximum layout boundary width */
+    margin: 0 auto; /* Centers main layout container */
+}
+
+.tvshows-card-margin {
+    margin-bottom: 0; /* Zero bottom card margin */
+}
+
+.tvshows-section-title {
+    color: #3b82f6; /* Accent blue section title color */
+    font-size: 1.2rem; /* Title font size */
+    margin-bottom: 15px; /* Space below title */
+    text-align: center; /* Centered title text */
+}
+
+.tvshows-search-row {
+    display: flex; /* Flex row layout */
+    gap: 15px; /* Gap between search elements */
+    align-items: center; /* Vertically centers search row items */
+    max-width: 800px; /* Maximum search row width */
+    margin: 0 auto; /* Centered horizontally */
+}
+
+.tvshows-input-flex {
+    flex: 1; /* Takes equal flex sizing portion */
+}
+
+.tvshows-zero-margin {
+    margin: 0; /* Resets all native margins to zero */
+}
+
+.tvshows-heading {
+    font-size: 1.6rem; /* Large heading font size */
+    color: #3b82f6; /* Accent blue heading color */
+    margin-bottom: 15px; /* Space below heading */
+    text-align: center; /* Centered heading text */
+}
+
+.tvshows-grid-container {
+    max-height: 65vh; /* Limits maximum grid container height */
+    overflow-y: auto; /* Enables vertical scrolling inside grid container */
+    padding-right: 10px; /* Internal right padding buffer for scrollbar */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive auto-filling card slots */
+    gap: 20px; /* Gap between grid poster cards */
+}
+
+.tvshows-hidden-modal {
+    display: none; /* Utility class to hide TV shows modal windows */
+}
+
+.tvshows-modal-box {
+    max-width: 450px; /* Maximum modal box width limit */
+    max-height: 70vh; /* Maximum modal box height limit */
+    display: flex; /* Flexbox layout container */
+    flex-direction: column; /* Vertical modal content stacking */
+}
+
+.tvshows-modal-header {
+    flex-shrink: 0; /* Prevents header from shrinking inside flex layout */
+    display: flex; /* Flex row layout */
+    justify-content: space-between; /* Spreads title and close button to opposite sides */
+    align-items: center; /* Vertically centers header items */
+    margin-bottom: 15px; /* Bottom space below modal header */
+}
+
+.tvshows-modal-title {
+    color: #3b82f6; /* Accent blue modal title color */
+    font-size: 1.2rem; /* Title font size */
+    margin: 0; /* Zero margin */
+}
+
+.tvshows-search-results-body {
+    overflow-y: auto; /* Enables vertical scrolling for search results */
+    max-height: calc(70vh - 80px); /* Calculated scrollable max height */
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Vertical result card stacking */
+    gap: 12px; /* Gap between search result items */
+    padding-right: 5px; /* Right padding buffer */
+}
+
+.tvshows-shrink-flex {
+    flex-shrink: 0; /* Prevents element from shrinking */
+}
+
+.tvshows-modal-body-scroll {
+    overflow-y: auto; /* Enables vertical scrolling inside modal body */
+    max-height: calc(70vh - 60px); /* Calculated scrollable max height */
+    padding-right: 5px; /* Right padding buffer */
+}
+
+.tvshows-rating-modal-box {
+    max-width: 400px; /* Maximum rating modal box width */
+}
+
+.tvshows-rating-title {
+    color: #3b82f6; /* Accent blue rating title color */
+    margin-bottom: 15px; /* Space below rating title */
+    font-size: 1.2rem; /* Title font size */
+}
+
+.tvshows-star-container {
+    font-size: 2rem; /* Large star rating icon size */
+    color: #fbbf24; /* Amber yellow star color */
+    cursor: pointer; /* Pointer cursor indicator */
+    margin-bottom: 15px; /* Bottom space below star rating container */
+    user-select: none; /* Prevents star icon text highlighting */
+}
+
+.tvshows-review-textarea {
+    width: 100%; /* Spans full container width */
+    height: 80px; /* Fixed review textarea box height */
+    margin-bottom: 15px; /* Bottom space below textarea */
+    background-color: #1e2533; /* Dark textarea background fill */
+    border: 1px solid #333c51; /* Subtle border line */
+    color: #f8fafc; /* White text input color */
+    padding: 10px; /* Internal textarea padding */
+    border-radius: 6px; /* Rounded corners */
+    outline: none; /* Disables browser default outline ring */
+}
+
+.tvshows-btn-row {
+    display: flex; /* Flex row layout for modal action buttons */
+    gap: 10px; /* Gap between modal action buttons */
+}
+
+.tvshows-cancel-btn {
+    margin-top: 0; /* Zero top margin */
+    margin-bottom: 0; /* Zero bottom margin */
+}
+
+/* ========================================== */
+/* 30. ACCOUNT.HTML SPECIFIC CLEANUP CLASSES  */
+/* ========================================== */
+@media (min-width: 900px) {
+    .profile-page-container {
+        max-width: 1400px !important; /* Expands account container max width on desktop */
+    }
+    .profile-settings-card {
+        display: grid !important; /* Converts account card to grid layout on desktop */
+        grid-template-columns: 320px 1fr !important; /* Two-column grid setup */
+        gap: 30px !important; /* Gap between avatar column and settings inputs */
+        align-items: start !important; /* Aligns grid items to top */
+        text-align: left !important; /* Left aligns card text content */
+    }
+    .profile-settings-card h2 {
+        grid-column: span 2; /* Spans settings title header across both grid columns */
+    }
+    .settings-grid-inputs {
+        display: grid; /* Grid layout container for account input fields */
+        grid-template-columns: 1fr 1fr; /* Two equal input columns */
+        gap: 15px; /* Gap between input grid cells */
+    }
+    .full-width-field {
+        grid-column: span 2; /* Spans designated form fields across both input columns */
+    }
+}
+
+.account-left-group-flex {
+    display: flex; /* Flex layout */
+    align-items: center; /* Vertically centers left header items */
+    gap: 15px; /* Gap between logo and title */
+    flex: 1.2; /* Flex portion ratio */
+    text-align: left; /* Left aligns text content */
+}
+
+.account-logo-shrink {
+    flex-shrink: 0; /* Prevents account logo from shrinking */
+}
+
+.account-logo-img {
+    height: 50px; /* Fixed account logo height */
+    width: auto; /* Proportional width scaling */
+}
+
+.account-center-flex {
+    flex: 1; /* Flex share ratio */
+    text-align: center; /* Centered alignment */
+    padding: 0; /* Zero internal padding */
+}
+
+.account-welcome-text {
+    position: static; /* Static positioning */
+    transform: none; /* Clears CSS transforms */
+    width: 100%; /* Spans full width */
+    font-size: 1.05rem; /* Text size */
+}
+
+.account-right-group-flex {
+    flex: 1; /* Flex share ratio */
+    display: flex; /* Flex layout */
+    justify-content: flex-end; /* Right-aligns navigation items */
+    align-items: center; /* Vertically centers right group items */
+    gap: 12px; /* Gap between control elements */
+}
+
+.account-left-flex {
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Vertical column stacking */
+    align-items: center; /* Centers avatar section horizontally */
+}
+
+.account-upload-label {
+    text-align: center; /* Centered upload prompt text */
+    display: block; /* Block element display behavior */
+}
+
+.account-full-width {
+    width: 100%; /* Forces element to span full available width */
+}
+
+.account-text-center {
+    text-align: center; /* Forces centered text alignment */
+}
+
+.account-username-heading {
+    font-size: 1.1rem; /* Username heading font size */
+    margin-bottom: 16px; /* Bottom margin offset */
+}
+
+/* Vertical stacking classes for usernames under presets */
+.username-stack-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.username-field-block {
+    width: 100%;
+}
+
+.username-field-block input {
+    width: 100%;
+}
+
+/* ========================================== */
+/* 31. MODAL POPUP CENTERING & OVERFLOW FIXES */
+/* ========================================== */
+
+/* Ensures the general modal overlay centers everything perfectly */
+.modal-overlay,
+#successModal {
+    display: none; /* Hidden by default until triggered */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+/* Forces the modal content box to stack vertically, stay centered, and never overflow */
+.modal-content {
+    background-color: #252c3d;
+    padding: 30px 25px 25px 25px;
+    border-radius: 12px;
+    border: 1px solid #333c51;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    max-width: 460px;
+    width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+}
+
+/* Forces any text or message paragraph inside the modal to stay fully centered and constrained */
+.modal-content p, 
+.modal-content h3, 
+#successModalMessage {
+    width: 100% !important;
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+/* ========================================== */
+/* 32. PROFILE USERNAME CENTERING STYLES      */
+/* ========================================== */
+
+/* Forces "Current Username:" and "Beau" to stack vertically and center */
+.current-username-display {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin-bottom: 15px !important;
+}
+
+/* Forces the "New Username:" label to center on its own line */
+.account-username-heading,
+label[for="newUsernameInput"] {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+    margin-top: 15px !important;
+    margin-bottom: 5px !important;
+}

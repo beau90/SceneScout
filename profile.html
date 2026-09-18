@@ -1,0 +1,344 @@
+<!-- Declares the document type as HTML5 to inform the browser how to render the page -->
+<!DOCTYPE html>
+<!-- Opens the root HTML tag and specifies English as the primary document language -->
+<html lang="en">
+<!-- Opens the head section containing metadata, document title, and style links -->
+<head>
+    <!-- Sets character encoding to UTF-8 to support standard characters and emojis -->
+    <meta charset="UTF-8">
+    <!-- Configures the mobile viewport to scale correctly across different device screen sizes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Defines the title displayed on the browser tab -->
+    <title>SceneScout - My Profile Hub</title>
+    <!-- Links the external stylesheet styles.css to apply visual formatting -->
+    <link rel="stylesheet" href="styles.css">
+<!-- Closes the head section -->
+</head>
+<!-- Opens the body element containing all visible page layout and UI components -->
+<body>
+
+    <!-- Floating Background Particles -->
+    <div class="particle-background">
+        <span class="particle popcorn"></span>
+        <span class="particle sparkle"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle sparkle"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle sparkle"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle sparkle"></span>
+        <span class="particle film-strip"></span>
+    </div>
+
+    <!-- Main top-level wrapper container for the active dashboard screen view -->
+    <div id="dashboardScreen">
+        
+        <!-- Top Banner Wrapper: Combined Navigation Bar Elements -->
+        <div class="top-fact-banner-wrapper">
+            <!-- Card container utilizing the combined film-strip layout styling -->
+            <div class="profile-section-card top-fact-card combined-fact-nav-card">
+                
+                <!-- Section 1: Top Nav Left Group (Logo) -->
+                <div class="nav-left-group">
+                    <!-- Hyperlink wrapper pointing back to the main index.html homepage -->
+                    <a href="index.html" class="tv-nav-logo-link">
+                        <!-- SceneScout brand logo image element -->
+                        <img src="logo.png" alt="SceneScout Logo" class="tv-nav-logo">
+                    <!-- Closes the logo hyperlink tag -->
+                    </a>
+                <!-- Closes the left-aligned navigation grouping container -->
+                </div>
+
+                <!-- Section 2: Top Nav Center Elements (Welcome Text) -->
+                <div class="combined-fact-center-content">
+                    <!-- Animated greeting message text element centered in the navigation bar -->
+                    <div class="nav-fun-text animated-welcome">Welcome to your Ultimate Cinematic Headquarters!</div>
+                </div>
+
+                <!-- Section 3: Top Nav Right Group (Hamburger Menu) -->
+                <div class="nav-right-group">
+                    <!-- Hamburger Menu Container with Responsive Desktop Profile & Mobile Toggle -->
+                    <div class="hamburger-menu-container">
+                        <button class="hamburger-btn" onclick="toggleHamburgerMenu(event)">
+                            <span class="desktop-nav-profile">
+                                <span id="navAvatarPreview" class="nav-avatar">🎬</span>
+                                <span id="navUsername" class="nav-username-text">Beaudoin</span>
+                            </span>
+                            <span class="mobile-hamburger-icon">☰</span>
+                        </button>
+                        <div class="hamburger-menu" id="hamburgerMenu">
+                            <div class="hamburger-user-header">
+                                <div id="hamburgerAvatarPreview" class="nav-avatar">🎬</div>
+                                <span id="hamburgerUsername" class="nav-username-text">Beaudoin</span>
+                            </div>
+                            <a href="index.html">Home 🏠</a>
+                            <a href="tvshows.html">TV Shows 📺</a>
+                            <a href="profile.html">My Profile 👤</a>                            
+                            <a href="account.html">Account Settings ⚙️</a>
+                            <!-- Mobile-only Log Out link inside the dropdown -->
+                            <a href="#" class="mobile-logout-link" onclick="handleLogout(); return false;">Log Out 🚪</a>
+                        </div>
+                    </div>
+                <!-- Closes the right-aligned navigation grouping container -->
+                </div>
+
+            <!-- Closes top-fact-card container -->
+            </div>
+        <!-- Closes top-fact-banner-wrapper container -->
+        </div>
+
+        <!-- Main profile hub wrapper layout container -->
+        <div class="app-layout profile-hub-layout profile-hub-container-flex">
+            
+            <!-- MASTER TOP HORIZONTAL CARD: Combined Bio/Picture, Friends, and Favorite Genres -->
+            <div class="profile-section-card profile-hub-top-card">
+                
+                <!-- Section A: Profile Identity (Picture & Bio) -->
+                <div class="profile-identity-column">
+                    <!-- Large circular settings avatar container displaying active user avatar icon -->
+                    <div id="hubAvatarPreview" class="settings-avatar hub-avatar-container">🎬</div>
+                    <!-- Display heading element showing saved username -->
+                    <h2 id="hubUsernameDisplay" class="profile-username">Beaudoin</h2>
+                    
+                    <!-- Text container displaying saved biography string from local storage -->
+                    <div id="hubUserBioDisplay" class="profile-bio-display"></div>
+
+                    <!-- Input form wrapper for writing and updating the profile biography -->
+                    <div class="bio-input-wrapper">
+                        <!-- Label element describing bio textarea input field -->
+                        <label class="field-label bio-label-align">Update Bio:</label>
+                        <!-- Multi-line text entry field where users type custom bio statements -->
+                        <textarea id="profileBioInput" rows="2" placeholder="Update Bio Above Here!"></textarea>
+                        <!-- Submit button triggering saveBio JS function to write to local storage -->
+                        <button class="btn-primary bio-save-btn" onclick="saveBio()">Save Bio</button>
+                    <!-- Closes bio input wrapper container -->
+                    </div>
+                </div>
+
+                <!-- Section B: Friends & Following -->
+                <div class="profile-friends-column">
+                    <!-- Section title heading with group emoji -->
+                    <h3 class="profile-card-title-reset">👥 Friends & Following</h3>
+                    <!-- Subtitle text prompting user connections -->
+                    <p class="section-subtitle">Follow Fellow Film Finders Here!</p>
+                    <!-- Flexbox row grouping friend input field and add button -->
+                    <div class="input-group-row">
+                        <!-- Text input box for typing a friend's username -->
+                        <input type="text" id="friendSearchInput" placeholder="Add Friend's Username..." class="no-margin">
+                        <!-- Action button executing addFriend JS function -->
+                        <button class="btn-primary btn-auto-width" onclick="addFriend()">Add</button>
+                    <!-- Closes input group row -->
+                    </div>
+                    <!-- Display container where added friend entries or placeholders are rendered -->
+                    <div id="friendsListContainer" class="friends-list-box friends-box-scroll">
+                        <!-- Default placeholder text when no friends exist -->
+                        No Friends Added Yet! Time to Recruit Some Movie Buddies! 🍿
+                    <!-- Closes friends list container -->
+                    </div>
+                </div>
+
+                <!-- Section C: Favorite Genres -->
+                <div class="profile-genre-column">
+                    <!-- Section title heading displaying drama mask emoji -->
+                    <h3 class="profile-card-title-reset">🎭 Favorite Genres</h3>
+                    <p class="section-subtitle">Pick Your Top Film Themes!</p>
+                    <!-- Flexbox row grouping genre selector and add button -->
+                    <div class="input-group-row">
+                        <!-- Dropdown select box containing film and TV genre options -->
+                        <select id="genreSelect" class="no-margin">
+                            <!-- Option choice for Action genre -->
+                            <option value="Action">Action 💥</option>
+                            <!-- Option choice for Sci-Fi genre -->
+                            <option value="Sci-Fi">Sci-Fi 🚀</option>
+                            <!-- Option choice for Horror genre -->
+                            <option value="Horror">Horror 👻</option>
+                            <!-- Option choice for Comedy genre -->
+                            <option value="Comedy">Comedy 😂</option>
+                            <!-- Option choice for Drama genre -->
+                            <option value="Drama">Drama 🎭</option>
+                            <!-- Option choice for Animation genre -->
+                            <option value="Animation">Animation 🎨</option>
+                            <!-- Option choice for Thriller genre -->
+                            <option value="Thriller">Thriller 🕶️</option>
+                        <!-- Closes genreSelect element -->
+                        </select>
+                        <!-- Action button executing addGenre JS function -->
+                        <button class="btn-primary btn-auto-width" onclick="addGenre()">Add</button>
+                    <!-- Closes genre input group row -->
+                    </div>
+                    <!-- Flexbox wrapper where genre badge pills are dynamically appended -->
+                    <div id="genreTagsContainer" class="genre-tags-wrapper genre-tags-scroll">
+                    <!-- Closes genreTagsContainer element -->
+                    </div>
+                </div>
+
+            </div>
+            <!-- End of Master Top Horizontal Card -->
+
+            <!-- BOTTOM 3-COLUMN LAYOUT: Favorite Movies -> Recommendations -> Ratings & Logbook -->
+            <div class="profile-bottom-row">
+                
+                <!-- LEFT COLUMN: Favorite Movies & TV Shows -->
+                <div class="profile-section-card profile-card-reset">
+                    <!-- Section title heading displaying star emoji -->
+                    <h3>⭐ Favorite Movies & TV Shows</h3>
+                    <!-- Vertical stack wrapper holding title input, media selector, file uploader, and save button -->
+                    <div class="stacked-input-group">
+                        <!-- Horizontal row grouping title input box and media type select box -->
+                        <div class="input-group-row">
+                            <!-- Text entry field for favorite movie or show title -->
+                            <input type="text" id="favTitleInput" placeholder="Enter Movie or TV Show!" class="no-margin">
+                            <!-- Dropdown selector specifying Movie vs TV Show media type -->
+                            <select id="favTypeSelect" class="type-select-dropdown no-margin">
+                                <!-- Option choice for Movie type -->
+                                <option value="Movie">Movie 🎬</option>
+                                <!-- Option choice for TV Show type -->
+                                <option value="TV Show">TV Show 📺</option>
+                            <!-- Closes favTypeSelect element -->
+                            </select>
+                        <!-- Closes input group row -->
+                        </div>
+                        <!-- Row layout providing custom button click trigger for file upload without browser text artifact -->
+                        <div class="file-upload-row profile-file-row-cursor" onclick="document.getElementById('favPosterFileInput').click();">
+                            <!-- Span text displaying upload prompt or selected image filename cleanly -->
+                            <span class="file-upload-label" id="favPosterFileName">Click Here To Upload Custom Poster/Scene!</span>
+                            <!-- Hidden input element accepting image file uploads without showing browser labels -->
+                            <input type="file" id="favPosterFileInput" accept="image/*" class="profile-hidden-input" onchange="document.getElementById('favPosterFileName').textContent = this.files[0] ? this.files[0].name : 'Upload Custom Poster/Scene 📁';">
+                        <!-- Closes file upload row -->
+                        </div>
+                        <!-- Action button executing addFavoriteTitle JS function -->
+                        <button class="btn-primary fav-save-btn" onclick="addFavoriteTitle()">Save Favorite</button>
+                    <!-- Closes stacked input group -->
+                    </div>
+
+                    <!-- Subheader indicating favorite movies subsection -->
+                    <h4 class="sub-section-header">🎬 Favorite Movies</h4>
+                    <!-- Grid container where favorite movie cards are dynamically rendered -->
+                    <div id="favoriteMoviesGrid" class="news-grid custom-grid-spacing">
+                        <!-- Placeholder notice text displayed when no favorite movies exist -->
+                        <div class="empty-list-notice">No Movies Added Yet.</div>
+                    <!-- Closes favoriteMoviesGrid container -->
+                    </div>
+
+                    <!-- Subheader indicating favorite TV shows subsection -->
+                    <h4 class="sub-section-header">📺 Favorite TV Shows</h4>
+                    <!-- Grid container where favorite TV show cards are dynamically rendered -->
+                    <div id="favoriteTvShowsGrid" class="news-grid">
+                        <!-- Placeholder notice text displayed when no favorite TV shows exist -->
+                        <div class="empty-list-notice">No TV Shows Added Yet.</div>
+                    <!-- Closes favoriteTvShowsGrid container -->
+                    </div>
+                <!-- Closes favorite titles section card -->
+                </div>
+
+                <!-- MIDDLE COLUMN: My Movie & TV Show Recommendations -->
+                <div class="profile-section-card profile-card-reset">
+                    <!-- Section title heading displaying sparkle emojis -->
+                    <h3>✨ My Movie & TV Show Recommendations</h3>
+                    <!-- Stacked form group holding recommendation inputs -->
+                    <div class="stacked-input-group">
+                        <!-- Horizontal row grouping title input and media type select box -->
+                        <div class="input-group-row">
+                            <!-- Text input field for recommendation title -->
+                            <input type="text" id="recommendationInput" placeholder="Add Recommendation Here!" class="no-margin">
+                            <!-- Dropdown selector specifying Movie vs TV Show type -->
+                            <select id="recommendationTypeSelect" class="type-select-dropdown no-margin">
+                                <!-- Option choice for Movie type -->
+                                <option value="Movie">Movie 🎬</option>
+                                <!-- Option choice for TV Show type -->
+                                <option value="TV Show">TV Show 📺</option>
+                            <!-- Closes recommendationTypeSelect element -->
+                            </select>
+                        <!-- Closes input group row -->
+                        </div>
+                        <!-- Custom upload row handling poster selection cleanly without browser artifacts -->
+                        <div class="file-upload-row profile-file-row-cursor" onclick="document.getElementById('recommendationPosterFileInput').click();">
+                            <!-- Label displaying poster instructions or selected filename -->
+                            <span class="file-upload-label" id="recPosterFileName">Click Here To Upload Custom Poster/Scene!</span>
+                            <!-- Hidden file chooser for custom recommendation poster images -->
+                            <input type="file" id="recommendationPosterFileInput" accept="image/*" class="profile-hidden-input" onchange="document.getElementById('recPosterFileName').textContent = this.files[0] ? this.files[0].name : 'Upload Custom Poster/Scene 📁';">
+                        <!-- Closes file upload row -->
+                        </div>
+                        <!-- Action button executing addRecommendation JS function -->
+                        <button class="btn-primary rec-save-btn" onclick="addRecommendation()">Save Recommendation</button>
+                    <!-- Closes stacked input group -->
+                    </div>
+
+                    <!-- Subheader for recommended movies grid -->
+                    <h4 class="sub-section-header">🎬 Recommended Movies</h4>
+                    <!-- Grid container where recommended movie cards are appended dynamically -->
+                    <div id="recommendedMoviesGrid" class="news-grid custom-grid-spacing">
+                        <!-- Placeholder notice displayed when no movie recommendations exist -->
+                        <div class="empty-list-notice">No Movie Recommendations Added Yet.</div>
+                    <!-- Closes recommendedMoviesGrid container -->
+                    </div>
+
+                    <!-- Subheader for recommended TV shows grid -->
+                    <h4 class="sub-section-header">📺 Recommended TV Shows</h4>
+                    <!-- Grid container where recommended TV show cards are appended dynamically -->
+                    <div id="recommendedTvShowsGrid" class="news-grid">
+                        <!-- Placeholder notice displayed when no TV show recommendations exist -->
+                        <div class="empty-list-notice">No TV Show Recommendations Added Yet.</div>
+                    <!-- Closes recommendedTvShowsGrid container -->
+                    </div>
+                <!-- Closes recommendations section card -->
+                </div>
+
+                <!-- RIGHT COLUMN: Rate a Movie or TV Show & Rated Logbook History -->
+                <div class="profile-section-card profile-card-reset">
+                    <!-- Section title heading displaying memo emoji -->
+                    <h3>📝 Rate a Movie or TV Show</h3>
+                    <!-- Text input field for typing media title being rated -->
+                    <input type="text" id="rateTitleInput" placeholder="Enter Movie or TV Show!" class="input-spacer">
+                    
+                    <!-- Field label for star rating selector -->
+                    <label class="field-label">Your Rating (1 to 5 Stars):</label>
+                    <!-- Dropdown select element containing star options from 1 to 5 stars -->
+                    <select id="starRatingSelect" class="input-spacer">
+                        <!-- Option choice for 5 out of 5 stars -->
+                        <option value="★★★★★">★★★★★ (5/5 - Absolute Masterpiece)</option>
+                        <!-- Option choice for 4 out of 5 stars -->
+                        <option value="★★★★☆">★★★★☆ (4/5 - Incredible)</option>
+                        <!-- Option choice for 3 out of 5 stars -->
+                        <option value="★★★☆☆">★★★☆☆ (3/5 - Solid & Enjoyable)</option>
+                        <!-- Option choice for 2 out of 5 stars -->
+                        <option value="★★☆☆☆">★★☆☆☆ (2/5 - Meh / Not Great)</option>
+                        <!-- Option choice for 1 out of 5 stars -->
+                        <option value="★☆☆☆☆">★☆☆☆☆ (1/5 - Total Flop)</option>
+                    <!-- Closes starRatingSelect element -->
+                    </select>
+
+                    <!-- Textarea input field for typing mini-reviews -->
+                    <textarea id="ratingReviewInput" rows="2" placeholder="Write a Quick Mini-Review..." class="input-spacer"></textarea>
+                    
+                    <!-- Action button executing submitPersonalRating JS function -->
+                    <button class="btn-primary" onclick="submitPersonalRating()">Save Rating to Logbook</button>
+
+                    <!-- Subheader separating rating form from logged review history log -->
+                    <h4 class="sub-section-header profile-subheader-space">📊 My Rated TV Shows & Movies</h4>
+                    <!-- Scrollable container wrapper holding rating log entry cards -->
+                    <div id="ratedLogContainer" class="rated-log-container">
+                        <!-- Default placeholder notice displayed when no ratings exist in storage -->
+                        <div id="emptyLogMessage" class="empty-log-notice">No Ratings Logged Yet. Start Rating Above! 🍿</div>
+                    <!-- Closes ratedLogContainer -->
+                    </div>
+                <!-- Closes rating & log section card -->
+                </div>
+
+            </div>
+            <!-- End of Bottom Row Grid -->
+
+        <!-- Closes app-layout profile-hub-layout container -->
+        </div>
+    <!-- Closes dashboardScreen container -->
+    </div>
+
+    <!-- Includes primary external script.js file -->
+    <script src="script.js"></script>
+<!-- Closes document body tag -->
+</body>
+<!-- Closes root html element tag -->
+</html>

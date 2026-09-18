@@ -1,0 +1,172 @@
+<!-- Declares the document type and version as HTML5 -->
+<!DOCTYPE html>
+<!-- Opens the root HTML element with English as the primary language -->
+<html lang="en">
+<!-- Opens the document head section containing metadata and stylesheet links -->
+<head>
+    <!-- Sets the character encoding standard to UTF-8 for universal text support -->
+    <meta charset="UTF-8">
+    <!-- Configures the viewport for responsive scaling on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Sets the title text displayed in the browser tab header -->
+    <title>SceneScout - Popular TV Shows</title>
+    <!-- Links the external CSS stylesheet file for application styling -->
+    <link rel="stylesheet" href="styles.css">
+<!-- Closes the document head section -->
+</head>
+<!-- Opens the main body container holding all visible elements of the web page -->
+<body>
+
+    <!-- Floating Background Particles -->
+    <div class="particle-background">
+        <span class="particle popcorn"></span>
+        <span class="particle sparkle"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle sparkle"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle sparkle"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle sparkle"></span>
+        <span class="particle film-strip"></span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- LOGGED-IN TV SHOWS PAGE CONTAINER         -->
+    <!-- ========================================== -->
+    <div id="dashboardScreen">
+        
+        <!-- Top Banner Wrapper: Matched to 1400px layout width and 25px padding -->
+        <div class="top-fact-banner-wrapper tvshows-banner-wrapper">
+            <!-- Card container utilizing the combined film-strip layout styling -->
+            <div class="profile-section-card top-fact-card combined-fact-nav-card">
+                
+                <!-- Section 1: Top Nav Left Group (Logo) -->
+                <div class="nav-left-group">
+                    <a href="index.html" class="tv-nav-logo-link">
+                        <img src="logo.png" alt="SceneScout Logo" class="tv-nav-logo">
+                    </a>
+                </div>
+
+                <!-- Section 2: Top Nav Center Elements (Welcome Text) -->
+                <div class="combined-fact-center-content tvshows-center-pad">
+                    <div class="nav-fun-text animated-welcome tvshows-welcome-text">Explore Popular Television Shows Right Here!</div>
+                </div>
+
+                <!-- Section 3: Top Nav Right Group (Hamburger Menu) -->
+                <div class="nav-right-group">
+                    <!-- Hamburger Menu Container with Responsive Desktop Profile & Mobile Toggle -->
+                    <div class="hamburger-menu-container">
+                        <button class="hamburger-btn" onclick="toggleHamburgerMenu(event)">
+                            <span class="desktop-nav-profile">
+                                <span id="navAvatarPreview" class="nav-avatar">🎬</span>
+                                <span id="navUsername" class="nav-username-text">Beaudoin</span>
+                            </span>
+                            <span class="mobile-hamburger-icon">☰</span>
+                        </button>
+                        <div class="hamburger-menu" id="hamburgerMenu">
+                            <div class="hamburger-user-header">
+                                <div id="hamburgerAvatarPreview" class="nav-avatar">🎬</div>
+                                <span id="hamburgerUsername" class="nav-username-text">Beaudoin</span>
+                            </div>
+                            <a href="index.html">Home 🏠</a>
+                            <a href="tvshows.html">TV Shows 📺</a>
+                            <a href="profile.html">My Profile 🪪</a>
+                            <a href="account.html">Account Settings 🔑</a>
+                            <!-- Mobile-only Log Out link inside the dropdown -->
+                            <a href="#" class="mobile-logout-link" onclick="handleLogout(); return false;">Log Out 🚪</a>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Closes top-fact-card container -->
+            </div>
+        <!-- Closes top-fact-banner-wrapper container -->
+        </div>
+
+        <!-- Main TV Shows Vertical Stack Layout Container -->
+        <div class="app-layout tvshows-main-layout">
+            
+            <!-- Top Horizontal Section: Search TV Shows Controls Card -->
+            <div class="profile-section-card tvshows-card-margin">
+                <h3 class="tvshows-section-title">🔍 Search TV Shows</h3>
+                <div class="tvshows-search-row">
+                    <input type="text" id="tvSearchInput" placeholder="Enter show title..." class="no-margin tvshows-input-flex">
+                    <button onclick="performTvSearch()" class="btn-primary btn-auto-width tvshows-zero-margin">Search Show</button>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Popular TV Shows Grid Feed Container -->
+            <div class="profile-section-card tvshows-card-margin">
+                <h2 class="tvshows-heading">📺 Popular TV Shows</h2>
+                <div id="tvShowsFeed" class="news-grid custom-scroll-feed tvshows-grid-container">
+                    Loading Popular TV Shows...
+                </div>
+            </div>
+
+        </div> <!-- Closes the main vertical stack layout container block -->
+    </div> <!-- Closes the dashboard screen container block -->
+
+    <!-- ========================================== -->
+    <!-- TV SHOW SEARCH RESULTS MODAL POP-UP WINDOW -->
+    <!-- ========================================== -->
+    <div id="tvSearchModal" class="modal-overlay tvshows-hidden-modal">
+        <!-- Reduced max-width to 450px and max-height to 70vh for a smaller modular window -->
+        <div class="modal-content tvshows-modal-box">
+            <div class="modal-header-bar tvshows-modal-header">
+                <h3 class="tvshows-modal-title">🔎 Search Results</h3>
+                <button onclick="closeTvSearchModal()" class="card-delete-btn" title="Close">✕</button>
+            </div>
+            <!-- Scrollable body container for search matches -->
+            <div id="tvSearchResultsFeed" class="custom-scroll-feed tvshows-search-results-body">
+                <!-- Dynamically populated search show cards go here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TV SHOW DETAILS MODAL POP-UP WINDOW        -->
+    <!-- ========================================== -->
+    <div id="tvModal" class="modal-overlay tvshows-hidden-modal">
+        <!-- Reduced max-width to 450px and max-height to 70vh -->
+        <div class="modal-content tvshows-modal-box">
+            <div class="modal-header-bar tvshows-shrink-flex">
+                <button onclick="closeTvModal()" class="card-delete-btn" title="Close">✕</button>
+            </div>
+            
+            <div id="tvModalBody" class="custom-scroll-feed tvshows-modal-body-scroll">
+                <!-- Dynamically populated show details go here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TV SHOW RATING & REVIEW MODAL POP-UP       -->
+    <!-- ========================================== -->
+    <div id="ratingModal" class="modal-overlay tvshows-hidden-modal">
+        <div class="modal-content tvshows-rating-modal-box">
+            <h3 id="ratingModalTitle" class="tvshows-rating-title">Rate Show</h3>
+            
+            <div id="starContainer" class="tvshows-star-container">
+                <span onclick="setRating(1)">★</span>
+                <span onclick="setRating(2)">★</span>
+                <span onclick="setRating(3)">★</span>
+                <span onclick="setRating(4)">★</span>
+                <span onclick="setRating(5)">★</span>
+            </div>
+            
+            <textarea id="ratingReviewInput" placeholder="Write An Optional Review..." class="tvshows-review-textarea"></textarea>
+            
+            <div class="tvshows-btn-row">
+                <button onclick="saveRatingModal(true)" class="btn-primary tvshows-zero-margin">Save Rating</button>
+                <button onclick="saveRatingModal(false)" class="btn-danger tvshows-cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Frontend client-side logic script -->
+    <script src="script.js"></script>
+</body>
+</html>

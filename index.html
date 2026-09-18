@@ -1,0 +1,269 @@
+<!-- Declares the document type as HTML5 to inform the browser how to render the page -->
+<!DOCTYPE html>
+<!-- Opens the root HTML tag and specifies English as the primary document language -->
+<html lang="en">
+<!-- Opens the head section containing metadata, document title, and style links -->
+<head>
+    <!-- Sets character encoding to UTF-8 to support standard characters and emojis -->
+    <meta charset="UTF-8">
+    <!-- Configures the mobile viewport to scale correctly across different device screen sizes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Defines the title displayed on the browser tab -->
+    <title>SceneScout - Instant Movie Identifier</title>
+    <!-- Links the external stylesheet styles.css to apply visual formatting -->
+    <link rel="stylesheet" href="styles.css">
+<!-- Closes the head section -->
+</head>
+
+<!-- Opens the body element containing all visible page layout and UI components -->
+<body>
+
+    <!-- Floating Background Particles Container -->
+    <div class="particle-background">
+        <span class="particle popcorn"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle film-strip"></span>
+        <span class="particle popcorn"></span>
+        <span class="particle film-strip"></span>        
+    </div>
+
+    <!-- Outer viewport container wrapper for the authentication screen -->
+    <div id="authScreen" class="auth-container">
+        <!-- Central card wrapper holding login, sign up, MFA, and reset password forms -->
+        <div class="auth-box">
+            <!-- Branding wrapper for centering the SceneScout logo and tagline -->
+            <div class="brand-logo">
+                <!-- SceneScout main brand logo image -->
+                <img src="logo.png" alt="SceneScout Logo" class="auth-logo-img">
+                <!-- Descriptive tagline under the main logo -->
+                <p class="tagline">Snap or Upload Any Movie Frame To Identify It Instantly!</p>
+            <!-- Closes the brand-logo container -->
+            </div>
+
+            <!-- Dynamic heading element displaying the active authentication mode title -->
+            <h2 id="authTitle">Sign In to SceneScout</h2>
+            
+            <!-- Credentials input form container wrapper -->
+            <div id="credentialsForm">
+                <!-- Text input field for typing the username required for authentication -->
+                <input type="text" id="usernameInput" placeholder="Username" required>
+                <!-- Email input field initially hidden, displayed only during user registration -->
+                <input type="email" id="emailInput" class="auth-email-hidden" placeholder="Email Address">
+                <!-- Password input field required for user login or registration -->
+                <input type="password" id="passwordInput" placeholder="Password" required>
+                
+                <!-- Primary authentication action button triggering handleAuthSubmit JS function -->
+                <button id="primaryAuthBtn" class="btn-primary" onclick="handleAuthSubmit()">Sign In</button>
+                
+                <!-- Inline flex container aligning registration toggle and forgot password buttons -->
+                <div class="auth-btn-row">
+                    <!-- Secondary button toggling between Sign In and Sign Up form modes -->
+                    <button id="toggleAuthModeBtn" class="btn-secondary" onclick="toggleAuthMode()">Need an Account? Sign Up!</button>
+                    <!-- Secondary button displaying the forgot password view -->
+                    <button type="button" id="forgotPasswordBtn" class="btn-secondary" onclick="showForgotPasswordView()">Forgot Password?</button>
+                <!-- Closes the flex button container -->
+                </div>
+            <!-- Closes the credentialsForm container -->
+            </div>
+
+            <!-- Forgot password section container initially hidden from view -->
+            <div id="forgotPasswordSection" class="auth-section-hidden">
+                <!-- Instructional notice text explaining the password reset step -->
+                <p id="forgotNotice" class="auth-notice-text">Enter Your Registered Email to Receive a Password Reset Link:</p>
+                <!-- Email text input field for submitting password reset requests -->
+                <input type="email" id="forgotEmailInput" placeholder="Enter your email address">
+                <!-- Primary button triggering submitForgotPassword JS function -->
+                <button class="btn-primary" onclick="submitForgotPassword()">Send Reset Link</button>
+                <!-- Secondary button returning the user to the standard sign in view -->
+                <button type="button" class="btn-secondary auth-back-btn" onclick="hideForgotPasswordView()">Back to Sign In</button>
+            <!-- Closes the forgotPasswordSection container -->
+            </div>
+
+            <!-- Multi-factor authentication section container initially hidden -->
+            <div id="mfaSection" class="auth-section-hidden">
+                <!-- Instructions for entering the 6-digit MFA security code -->
+                <p id="mfaNotice">Enter the 6-digit Code Sent To Your Email Address:</p>
+                <!-- Centered text input field constrained to a 6-character verification code -->
+                <input type="text" id="mfaCodeInput" class="mfa-code-input" placeholder="123456" maxlength="6">
+                <!-- Primary button triggering verifyMfaCode JS function -->
+                <button class="btn-primary" onclick="verifyMfaCode()">Verify Code</button>
+            <!-- Closes the mfaSection container -->
+            </div>
+            
+            <!-- Paragraph element displaying error or success authentication messages -->
+            <p id="authMessage" class="auth-message-text"></p>
+        <!-- Closes the auth-box card container -->
+        </div>
+    <!-- Closes the authScreen container -->
+    </div>
+
+    <!-- Main application dashboard view container initially hidden until authentication succeeds -->
+    <div id="dashboardScreen" class="dashboard-screen-hidden">
+        
+        <!-- Top Banner Wrapper -->
+        <div class="top-fact-banner-wrapper">
+            <!-- Card container utilizing the combined film-strip layout styling -->
+            <div class="profile-section-card top-fact-card combined-fact-nav-card">
+                
+                <!-- Left Group: Logo with Mascot Speech Bubble side-by-side -->
+                <div class="nav-left-group index-nav-left">
+                    <a href="index.html" class="tv-nav-logo-link index-logo-link">
+                        <!-- SceneScout brand logo image -->
+                        <img src="logo.png" alt="SceneScout Logo" class="tv-nav-logo index-nav-logo-img">
+                    </a>
+                    
+                    <!-- Mascot Speech Bubble Container -->
+                    <div class="mascot-speech-bubble">
+                        <h3 class="mascot-title">🎞️ Movie Fact of the Day</h3>
+                        <p id="factOfDayText" class="fact-text-content">Loading Fact of the Day...</p>
+                    </div>
+                </div>
+
+                <!-- Center Group: Header text centered in the middle -->
+                <div class="combined-fact-center-content index-center-content">
+                    <!-- Animated greeting message text element centered in the navigation bar -->
+                    <div class="nav-fun-text animated-welcome">Welcome to SceneScout! Find Movie Titles Instantly!</div>
+                </div>
+
+                <!-- Right Group: Hamburger Menu -->
+                <div class="nav-right-group index-nav-right">
+                    <!-- Hamburger Menu Container with Responsive Desktop Profile & Mobile Toggle -->
+                    <div class="hamburger-menu-container">
+                        <button class="hamburger-btn" onclick="toggleHamburgerMenu(event)">
+                            <span class="desktop-nav-profile">
+                                <span id="navAvatarPreview" class="nav-avatar">🎬</span>
+                                <span id="navUsername" class="nav-username-text">Beaudoin</span>
+                            </span>
+                            <span class="mobile-hamburger-icon">☰</span>
+                        </button>
+                        <div class="hamburger-menu" id="hamburgerMenu">
+                            <div class="hamburger-user-header">
+                                <div id="hamburgerAvatarPreview" class="nav-avatar">🎬</div>
+                                <span id="hamburgerUsername" class="nav-username-text">Beaudoin</span>
+                            </div>
+                            <a href="index.html">Home 🏠</a>
+                            <a href="tvshows.html">TV Shows 📺</a>
+                            <a href="profile.html">My Profile 👤</a>
+                            <a href="account.html">Account Settings ⚙️</a>
+                            <!-- Mobile & Desktop Dropdown Log Out link -->
+                            <a href="#" class="mobile-logout-link" onclick="handleLogout(); return false;">Log Out 🚪</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Main 3-Column Layout Container -->
+        <div id="dashboardPage" class="app-layout index-app-layout">
+            
+            <!-- Left column container for recently released movies and upcoming feed grids -->
+            <div class="column-left-feed">
+                <!-- Section heading for recently released movies -->
+                <h2>🎬 Recently Released Movies</h2>
+                <!-- Dynamic feed container where recent movie cards are rendered via JS -->
+                <div id="recentFeed" class="news-grid feed-bottom-spacing">Loading Recent Movies...</div>
+
+                <!-- Section heading for upcoming theatrical releases -->
+                <h2>🍿 Coming Soon to Theaters</h2>
+                <!-- Dynamic feed container where upcoming movie cards are rendered via JS -->
+                <div id="upcomingFeed" class="news-grid">Loading Upcoming Movies...</div>
+            <!-- Closes the left column feed container -->
+            </div>
+
+            <!-- Middle column sidebar containing the screenshot upload identification tool -->
+            <div class="sidebar-middle">
+                <!-- Branding logo wrapper for center column -->
+                <div class="column-brand-logo">
+                    <!-- SceneScout sidebar brand logo image -->
+                    <img src="logo.png" alt="SceneScout Logo" class="column-logo-img">
+                <!-- Closes column-brand-logo container -->
+                </div>
+                <!-- Dynamic quote or tagline text paragraph -->
+                <p id="sidebarFunText" class="sidebar-fun-text"></p>
+
+                <!-- Tool title heading -->
+                <h2>🎬 SceneScout Movie Search</h2>
+                <!-- Upload input section container -->
+                <div id="uploadSection">
+                    <!-- Drag-and-drop label trigger acting as upload zone wrapper -->
+                    <label id="dropLabel" class="drop-zone">
+                        <!-- Text displaying drag-and-drop instructions or selected file name -->
+                        <span id="fileNameDisplay">🍿 Upload or Drag Mystery Screenshot Here!</span>
+                        <!-- Hidden file input accepting image formats and running updateFileName -->
+                        <input type="file" id="imageInput" accept="image/*" onchange="updateFileName()" hidden>
+                    <!-- Closes drop-zone label element -->
+                    </label>
+                    <!-- Action button triggering uploadImage JS function to identify screenshot -->
+                    <button class="btn-primary" onclick="uploadImage()">Identify Movie</button>
+                <!-- Closes uploadSection container -->
+                </div>
+                <!-- Container for displaying processing status messages -->
+                <div id="statusContainer"></div>
+                <!-- Container for rendering the identified movie result card -->
+                <div id="resultContainer"></div>
+            <!-- Closes sidebar-middle container -->
+            </div>
+
+            <!-- Right column container for movie news and discussion feeds -->
+            <div class="column-right">
+                <!-- Section heading for movie news -->
+                <h2>📰 Movie News</h2>
+                <!-- Dynamic feed container where movie news cards are rendered via JS -->
+                <div id="newsFeed" class="news-grid feed-bottom-spacing">Loading Movie News...</div>
+
+                <!-- Section heading for movie discussions -->
+                <h2>💬 Movie Discussions</h2>
+                <!-- Dynamic feed container where discussion cards are rendered via JS -->
+                <div id="discussionFeed" class="news-grid">Loading Discussions...</div>
+            <!-- Closes column-right container -->
+            </div>
+        <!-- Closes dashboardPage app-layout wrapper -->
+        </div>
+
+    <!-- Closes dashboardScreen container -->
+    </div>
+
+    <!-- Overlay backdrop container for popup loading/result modal initially hidden -->
+    <div id="loadingModal" class="modal-overlay modal-overlay-hidden">
+        <!-- Central card container inside modal overlay -->
+        <div class="modal-content">
+            <!-- Top bar wrapper inside modal card -->
+            <div class="modal-header-bar">
+                <!-- Close button triggering closeModal JS function -->
+                <button onclick="closeModal()" class="card-delete-btn" title="Close">✕</button>
+            <!-- Closes modal-header-bar container -->
+            </div>
+            
+            <!-- Scrollable body container for modal content -->
+            <div id="modalBody">
+                <!-- Animated loading spinner element -->
+                <div class="spinner"></div>
+                <!-- Title heading indicating screenshot analysis state -->
+                <h3 class="modal-analyzing-title">Analyzing Your Screenshot...</h3>
+                <!-- Dynamic text element displaying rotating fun loading quotes -->
+                <p id="loadingQuotes">Microwaving The Popcorn...</p>
+            <!-- Closes modalBody container -->
+            </div>
+        <!-- Closes modal-content card -->
+        </div>
+    <!-- Closes loadingModal overlay -->
+    </div>
+
+    <!-- Script tag linking external controller file script.js -->
+    <script src="script.js"></script>
+<!-- Closes body element -->
+</body>
+<!-- Closes html root element -->
+</html>

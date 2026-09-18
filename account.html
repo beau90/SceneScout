@@ -1,0 +1,335 @@
+<!-- Declares the document type as HTML5 to inform the browser how to render the page -->
+<!DOCTYPE html>
+<!-- Opens the root HTML tag and specifies English as the primary document language -->
+<html lang="en">
+<!-- Opens the head section containing metadata, document title, and style links -->
+<head>
+    <!-- Sets character encoding to UTF-8 to support standard characters and emojis -->
+    <meta charset="UTF-8">
+    <!-- Configures the mobile viewport to scale correctly across different device screen sizes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Defines the title displayed on the browser tab -->
+    <title>Account Settings - SceneScout</title>
+    <!-- Links the external stylesheet styles.css to apply visual formatting -->
+    <link rel="stylesheet" href="styles.css">
+<!-- Closes the head section -->
+</head>
+<!-- Opens the body element containing all visible page layout and UI components -->
+<body>
+
+    <!-- Floating Background Particles Container Wrapper -->
+    <div class="particle-background">
+        <!-- Individual decorative background particle element 1 -->
+        <span class="particle popcorn"></span>
+        <!-- Individual decorative background particle element 2 -->
+        <span class="particle film-strip"></span>
+        <!-- Individual decorative background particle element 3 -->
+        <span class="particle popcorn"></span>
+        <!-- Individual decorative background particle element 4 -->
+        <span class="particle film-strip"></span>
+        <!-- Individual decorative background particle element 5 -->
+        <span class="particle popcorn"></span>
+        <!-- Individual decorative background particle element 6 -->
+        <span class="particle film-strip"></span>
+        <!-- Individual decorative background particle element 7 -->
+        <span class="particle popcorn"></span>
+        <!-- Individual decorative background particle element 8 -->
+        <span class="particle film-strip"></span>
+        <!-- Individual decorative background particle element 9 -->
+        <span class="particle popcorn"></span>
+        <!-- Individual decorative background particle element 10 -->
+        <span class="particle film-strip"></span>
+        <!-- Individual decorative background particle element 11 -->
+        <span class="particle popcorn"></span>
+        <!-- Individual decorative background particle element 12 -->
+        <span class="particle film-strip"></span>
+        <!-- Individual decorative background particle element 13 -->
+        <span class="particle popcorn"></span>
+        <!-- Individual decorative background particle element 14 -->
+        <span class="particle film-strip"></span>
+        <!-- Individual decorative background particle element 15 -->
+        <span class="particle popcorn"></span>
+        <!-- Individual decorative background particle element 16 -->
+        <span class="particle film-strip"></span>        
+    <!-- Closes particle-background container -->
+    </div>
+
+    <!-- Main Dashboard Screen Wrapper -->
+    <div id="dashboardScreen">
+        
+        <!-- Top Banner Wrapper: Navigation Bar Elements Only -->
+        <div class="top-fact-banner-wrapper">
+            <!-- Card container utilizing the combined layout styling with space-between alignment -->
+            <div class="profile-section-card top-fact-card combined-fact-nav-card">
+                
+                <!-- Left Group: Logo Link Container -->
+                <div class="nav-left-group account-left-group-flex">
+                    <!-- Hyperlink wrapper pointing back to the main index.html homepage -->
+                    <a href="index.html" class="tv-nav-logo-link account-logo-shrink">
+                        <!-- SceneScout brand logo image element -->
+                        <img src="logo.png" alt="SceneScout Logo" class="tv-nav-logo account-logo-img">
+                    <!-- Closes logo hyperlink -->
+                    </a>
+                <!-- Closes left group container -->
+                </div>
+
+                <!-- Center Group: Header text centered in the middle of the navigation bar -->
+                <div class="combined-fact-center-content account-center-flex">
+                    <!-- Sub-heading text describing the active account settings view -->
+                    <div class="nav-fun-text animated-welcome account-welcome-text">SceneScout Command Center!</div>
+                <!-- Closes center group container -->
+                </div>
+
+                <!-- Right Group: Hamburger Menu Container -->
+                <div class="nav-right-group account-right-group-flex">
+                    <!-- Hamburger Menu Container with Responsive Desktop Profile & Mobile Toggle -->
+                    <div class="hamburger-menu-container">
+                        <!-- Toggle button triggering toggleHamburgerMenu JS function on click -->
+                        <button class="hamburger-btn" onclick="toggleHamburgerMenu(event)">
+                            <!-- Desktop profile view wrapper span -->
+                            <span class="desktop-nav-profile">
+                                <!-- Nav avatar preview icon span -->
+                                <span id="navAvatarPreview" class="nav-avatar">🎬</span>
+                                <!-- Dynamically populated active username text span -->
+                                <span id="navUsername" class="nav-username-text"></span>
+                            </span>
+                            <!-- Mobile hamburger menu icon span -->
+                            <span class="mobile-hamburger-icon">☰</span>
+                        </button>
+                        <!-- Hamburger dropdown menu container -->
+                        <div class="hamburger-menu" id="hamburgerMenu">
+                            <!-- User identity header inside hamburger dropdown -->
+                            <div class="hamburger-user-header">
+                                <!-- Avatar icon preview element inside hamburger header -->
+                                <div id="hamburgerAvatarPreview" class="nav-avatar">🎬</div>
+                                <!-- Dynamically populated active username text span -->
+                                <span id="hamburgerUsername" class="nav-username-text"></span>
+                            <!-- Closes hamburger user header -->
+                            </div>
+                            <!-- Navigation link to Home dashboard view -->
+                            <a href="index.html">Home 🏠</a>
+                            <!-- Navigation link to TV Shows hub -->
+                            <a href="tvshows.html">TV Shows 📺</a>
+                            <!-- Navigation link to User Profile hub -->
+                            <a href="profile.html">My Profile 👤</a>
+                            <!-- Navigation link to Account Settings page -->
+                            <a href="account.html">Account Settings ⚙️</a>
+                            <!-- Mobile-only Log Out link inside the dropdown -->
+                            <a href="#" class="mobile-logout-link" onclick="handleLogout(); return false;">Log Out 🚪</a>
+                        <!-- Closes hamburger menu dropdown box -->
+                        </div>
+                    <!-- Closes hamburger menu container -->
+                    </div>
+                <!-- Closes right group container -->
+                </div>
+
+            <!-- Closes top-fact-card container -->
+            </div>
+        <!-- Closes top-fact-banner-wrapper container -->
+        </div>
+
+        <!-- Account settings profile page section container -->
+        <div id="profilePage" class="profile-page-container">
+            <!-- Settings form card wrapper -->
+            <div class="profile-settings-card">
+                <!-- Section title heading -->
+                <h2>👤 Account Settings</h2>
+                
+                <!-- Left Column Wrapper: Houses Avatar, Preset Grid, and Username Fields -->
+                <div class="account-left-column account-left-flex">
+                    <!-- Avatar image upload box container -->
+                    <div class="avatar-container profile-avatar-box">
+                        <!-- Large avatar preview display box element -->
+                        <div id="profileAvatarPreview" class="settings-avatar profile-avatar-preview-box">🎬</div>
+                        <!-- Line break element -->
+                        <br>
+                        <!-- Custom image upload label button triggering hidden avatar file input -->
+                        <label class="btn-secondary profile-upload-trigger account-upload-label">
+                            <!-- Icon and button label text string -->
+                            📷 Upload Custom Image
+                            <!-- Hidden file input triggering previewProfileAvatar JS function on file selection -->
+                            <input type="file" id="profileAvatarInput" accept="image/*" onchange="previewProfileAvatar()" hidden>
+                        <!-- Closes avatar upload label -->
+                        </label>
+                    <!-- Closes avatar-container -->
+                    </div>
+
+                    <!-- Preset icons selection grid wrapper container -->
+                    <div class="preset-avatars-section profile-preset-wrapper account-full-width">
+                        <!-- Field label for preset avatars -->
+                        <label class="field-label preset-label-space account-text-center">Or Choose a Preset Icon:</label>
+                        <!-- Grid container housing selectable preset avatar emojis -->
+                        <div class="preset-grid" id="presetAvatarGrid">
+                            <!-- Selectable clapboard emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('🎬')">🎬</div>
+                            <!-- Selectable popcorn emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('🍿')">🍿</div>
+                            <!-- Selectable movie camera emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('🎥')">🎥</div>
+                            <!-- Selectable star emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('⭐')">⭐</div>
+                            <!-- Selectable admission ticket emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('🎟️')">🎟️</div>
+                            <!-- Selectable sunglasses emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('🕶️')">🕶️</div>
+                            <!-- Selectable crown emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('👑')">👑</div>
+                            <!-- Selectable ghost emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('👻')">👻</div>
+                            <!-- Selectable rocket emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('🚀')">🚀</div>
+                            <!-- Selectable fire emoji preset avatar icon -->
+                            <div class="preset-icon" onclick="selectPresetAvatar('🔥')">🔥</div>
+                        <!-- Closes presetAvatarGrid container -->
+                        </div>
+                    <!-- Closes preset-avatars-section container -->
+                    </div>
+
+                    <!-- USERNAME FIELDS STACKED VERTICALLY WITH BOTH LABELS & VALUES CENTERED -->
+                    <div class="account-full-width username-stack-container">
+                        
+                        <!-- Current Username Container Block (Top) -->
+                        <div class="username-field-block current-username-display">
+                            <!-- Label for current username display -->
+                            <label class="field-label account-text-center">Current Username:</label>
+                            <!-- Dynamically populated display heading for user's active username string -->
+                            <h3 id="displayUsername" class="account-username-heading"></h3>
+                        <!-- Closes current username block -->
+                        </div>
+
+                        <!-- New Username Container Block (Bottom) -->
+                        <div class="username-field-block">
+                            <!-- Label for new username input field -->
+                            <label class="field-label account-text-center">New Username:</label>
+                            <!-- Text input field for specifying a new username value -->
+                            <input type="text" id="newUsernameInput" placeholder="Enter New Username">
+                        <!-- Closes new username block -->
+                        </div>
+
+                    <!-- Closes username stack container -->
+                    </div>
+                <!-- Closes account-left-column container -->
+                </div>
+
+                <!-- Right Column Wrapper: Form Inputs (Phone Number & Birthdate positioned at top) -->
+                <div class="settings-section">
+                    <!-- Settings grid inputs container wrapper -->
+                    <div class="settings-grid-inputs">
+                        
+                        <!-- Phone Number Field Container Block -->
+                        <div>
+                            <!-- Label for phone number entry field -->
+                            <label class="field-label">Phone Number:</label>
+                            <!-- Input field for user's phone number string -->
+                            <input type="text" id="profilePhone" placeholder="(555) 000-0000">
+                        </div>
+
+                        <!-- Birthdate Field Container Block -->
+                        <div>
+                            <!-- Label for birthdate entry field -->
+                            <label class="field-label">Birthdate:</label>
+                            <!-- Date picker input element for selecting birthdate value -->
+                            <input type="date" id="profileBirthdate">
+                        </div>
+
+                        <!-- Gender Selection Field Container Block -->
+                        <div class="full-width-field">
+                            <!-- Label for gender selection dropdown -->
+                            <label class="field-label">Gender:</label>
+                            <!-- Select dropdown element for gender options -->
+                            <select id="profileGender">
+                                <!-- Default disabled prompt option -->
+                                <option value="" disabled selected>Select Gender</option>
+                                <!-- Male option choice -->
+                                <option value="male">Male</option>
+                                <!-- Female option choice -->
+                                <option value="female">Female</option>
+                                <!-- Non-binary option choice -->
+                                <option value="non-binary">Non-Binary</option>
+                                <!-- Prefer not to say option choice -->
+                                <option value="prefer-not-to-say">Prefer Not To Say</option>
+                            <!-- Closes profileGender select element -->
+                            </select>
+                        <!-- Closes gender full-width field -->
+                        </div>
+
+                        <!-- Current Email Display Field Container Block -->
+                        <div class="full-width-field">
+                            <!-- Label for current registered email display -->
+                            <label class="field-label">Current Email:</label>
+                            <!-- Box element displaying active registered email address string -->
+                            <div id="currentEmailDisplay" class="current-email-box">Loading email...</div>
+                        <!-- Closes email display full-width field -->
+                        </div>
+
+                        <!-- Update Email Field Container Block -->
+                        <div class="full-width-field">
+                            <!-- Label for updating email address -->
+                            <label class="field-label">Update Email:</label>
+                            <!-- Email input field for entering a new email address string -->
+                            <input type="email" id="profileEmail" placeholder="Enter new email address">
+                        <!-- Closes update email full-width field -->
+                        </div>
+
+                        <!-- Current Password Verification Field Container Block -->
+                        <div class="full-width-field">
+                            <!-- Label for current password input required during password changes -->
+                            <label class="field-label">Current Password (Required for Password Change):</label>
+                            <!-- Password input field for verifying current credentials -->
+                            <input type="password" id="currentPasswordInput" placeholder="Enter current password">
+                        <!-- Closes current password full-width field -->
+                        </div>
+
+                        <!-- New Password Replacement Field Container Block -->
+                        <div class="full-width-field">
+                            <!-- Label for entering a replacement password -->
+                            <label class="field-label">New Password:</label>
+                            <!-- Password input field for typing the new target password value -->
+                            <input type="password" id="newPasswordInput" placeholder="Enter new password">
+                        <!-- Closes new password full-width field -->
+                        </div>
+
+                    <!-- Closes settings-grid-inputs container -->
+                    </div>
+
+                    <!-- Action Buttons Row (Using 3-column grid layout via settings-action-row class) -->
+                    <div class="settings-action-row full-width-field">
+                        <!-- Save settings button triggering saveProfile JS function on click -->
+                        <button class="btn-primary save-settings-btn" onclick="saveProfile()">Save Settings</button>
+                        <!-- Logout action button triggering handleLogout JS function on click -->
+                        <button class="btn-primary" onclick="handleLogout()">Log Out</button>
+                        <!-- Account deletion button triggering deleteAccount JS function on click -->
+                        <button class="btn-danger" onclick="deleteAccount()">Delete Account</button>
+                    <!-- Closes settings-action-row container -->
+                    </div>
+                <!-- Closes settings-section container -->
+                </div>
+            <!-- Closes profile-settings-card wrapper -->
+            </div>
+        <!-- Closes profilePage container -->
+        </div>
+
+    <!-- Closes dashboardScreen container -->
+    </div>
+
+    <!-- CUSTOM SUCCESS MODAL POPUP WINDOW (Class-based structure matching project styling, zero inline CSS) -->
+    <div id="successModal" class="modal-overlay">
+        <!-- Modal content card wrapper container -->
+        <div class="modal-content profile-settings-card">
+            <!-- Modal Header Title Heading -->
+            <h3>✅ Success</h3>
+            <!-- Dynamic Success Message Paragraph Element -->
+            <p id="successModalMessage">Settings Updated Successfully!</p>
+            <!-- Dismissal Button Triggering closeSuccessModal JS Function -->
+            <button class="btn-primary" onclick="closeSuccessModal()">OK</button>
+        <!-- Closes modal-content card wrapper -->
+        </div>
+    <!-- Closes successModal overlay container -->
+    </div>
+
+    <!-- Script tag linking external controller file script.js -->
+    <script src="script.js"></script>
+<!-- Closes body element -->
+</body>
+<!-- Closes html root element -->
+</html>

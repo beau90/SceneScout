@@ -67,14 +67,14 @@ users_db = load_users() # Executes the loader function to populate the user data
 # 4. EMAIL & EXTERNAL AI/API CONFIGURATIONS
 # ==========================================
 mail_config = ConnectionConfig(
-    MAIL_USERNAME="test@example.com", # Defines default SMTP login account username string
-    MAIL_PASSWORD="dummy_password",   # Defines default SMTP login password string
-    MAIL_FROM="test@example.com",     # Defines default sender email address header
-    MAIL_PORT=587,                    # Sets standard TLS SMTP port number integer
-    MAIL_SERVER="smtp.gmail.com",     # Sets standard Gmail SMTP relay server hostname string
-    MAIL_STARTTLS=True,               # Enables STARTTLS secure connection protocol flag
-    MAIL_SSL_TLS=False,               # Disables direct SSL/TLS socket wrapping flag
-    USE_CREDENTIALS=True              # Instructs mail client to authenticate using username and password
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"), # Loads SMTP login account username string from environment variables
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"), # Loads SMTP login app password string from environment variables
+    MAIL_FROM=os.getenv("MAIL_FROM"),         # Loads sender email address header string from environment variables
+    MAIL_PORT=587,                            # Sets standard TLS SMTP port number integer
+    MAIL_SERVER="smtp.gmail.com",             # Sets standard Gmail SMTP relay server hostname string
+    MAIL_STARTTLS=True,                       # Enables STARTTLS secure connection protocol flag
+    MAIL_SSL_TLS=False,                       # Disables direct SSL/TLS socket wrapping flag
+    USE_CREDENTIALS=True                      # Instructs mail client to authenticate using username and password
 ) # Configures connection settings container for automated email delivery services
 fastmail = FastMail(mail_config) # Initializes the active FastMail dispatch client instance
 
@@ -140,7 +140,7 @@ async def register(data: dict):
 
 @app.post("/api/login")
 async def login(data: dict):
-    """API endpoint to authenticate user credentials and trigger MFA code generation."""
+    """API endpoint to authenticate user credentials and send real MFA code via email."""
     username = data.get("username", "").strip().lower() # Extracts and normalizes username string from request body
     password = data.get("password", "").strip()         # Extracts and trims password input string
 
@@ -152,15 +152,23 @@ async def login(data: dict):
     user["mfa_code"] = code    # Assigns the generated verification code to the user record
     save_users()               # Saves updated user database state to disk file
 
-    print("\n" + "="*40)
-    print(f" [TESTING] MFA CODE FOR {username.upper()}: {code}") # Prints MFA code to local terminal for developer testing
-    print("="*40 + "\n")
+    # Constructs the email message payload schema to send to user's registered email address
+    message = MessageSchema(
+        subject="Your SceneScout Verification Code",
+        recipients=[user["email"]],
+        body=f"Your 6-digit SceneScout verification code is: {code}",
+        subtype=MessageType.plain
+    )
+    try:
+        await fastmail.send_message(message) # Dispatches real email message asynchronously via SMTP server
+    except Exception as e:
+        print(f"Email Dispatch Error: {e}") # Logs exception if email transmission fails
 
     return {
         "success": True,
         "mfa_required": True,
         "username": user.get("display_name", username),
-        "message": "Verification code generated. Check your VS Code terminal."
+        "message": f"Verification code sent to {user['email']}"
     } # Returns JSON response instructing frontend to display MFA code input step
 
 @app.post("/api/verify-mfa")

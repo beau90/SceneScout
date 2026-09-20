@@ -287,7 +287,7 @@ async def forgot_password(data: dict):
 # ==========================================
 @app.get("/api/profile")
 def get_profile(username: str = Header(None)):
-    """API endpoint to fetch profile data for the authenticated user based on request header."""
+    """API endpoint to fetch profile data for the authenticated user based on request header with email injection."""
     if not username:
         raise HTTPException(status_code=401, detail="User not found.") # Raises 401 error if username header is missing
     
@@ -296,21 +296,34 @@ def get_profile(username: str = Header(None)):
         raise HTTPException(status_code=401, detail="User not found.") # Raises 401 error if user record absent
 
     user = users_db[current_key] # Retrieves target user record dictionary
+    
+    # Ensures profile dictionary contains account email so frontend profile page populates correctly
+    profile_data = user.get("profile", {})
+    if not profile_data.get("email"):
+        profile_data["email"] = user.get("email", "")
+
     return {
         "success": True,
         "username": user.get("display_name", current_key),
-        "profile": user["profile"]
-    } # Returns JSON response containing profile settings data
+        "profile": profile_data
+    } # Returns JSON response containing profile settings data with email
 
 @app.post("/api/profile/update")
 async def update_profile(data: dict, username: str = Header(None)):
-    """API endpoint to update user profile details, email, password, or username."""
+    """API endpoint to update user profile details with global reload and body fallback lookup."""
+    global users_db
+    users_db = load_users() # Forces cache refresh from Supabase on every update request
+
+    # Fallback: if header is missing, check if username was included in request body payload
     if not username:
-        raise HTTPException(status_code=401, detail="User not found.") # Validates presence of username header
+        username = data.get("username", "")
+
+    if not username:
+        raise HTTPException(status_code=401, detail="User not found. Missing username identifier.") # Validates username presence
     
     current_key = username.strip().lower() # Normalizes active user database lookup key string
     if current_key not in users_db:
-        raise HTTPException(status_code=401, detail="User not found.") # Verifies user database record exists
+        raise HTTPException(status_code=401, detail=f"User '{current_key}' not found in database.") # Verifies user record exists
 
     user = users_db[current_key]           # Retrieves active user dictionary reference
     updated_username_key = current_key     # Initializes tracking variable for updated username keys
@@ -825,6 +838,6 @@ async def identify(file: UploadFile = File(...)):
 
     except Exception as e:
         return {
-            "success": false,
+            "success": False,
             "message": f"An error occurred while analyzing the image: {str(e)}"
         } # Returns error response dictionary if identification pipeline crashes

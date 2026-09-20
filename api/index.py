@@ -82,15 +82,22 @@ def load_users():
     return users
 
 def save_user_to_db(username: str, user_data: dict):
-    """Saves or updates a single user record securely in Supabase using an upsert query."""
+    """Saves or updates a single user record securely in Supabase using an upsert query with safe JSON serialization."""
     conn = get_db_connection() # Opens database connection helper
     if not conn:
         return
     try:
         with conn.cursor() as cur:
+            # Ensures profile data is safely serialized into a valid JSON string for PostgreSQL JSONB insertion
+            profile_to_save = user_data.get("profile", {})
+            if isinstance(profile_to_save, dict):
+                profile_json = json.dumps(profile_to_save)
+            else:
+                profile_json = json.dumps({})
+
             cur.execute("""
                 INSERT INTO users (username, display_name, password_hash, email, mfa_code, profile)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s::jsonb)
                 ON CONFLICT (username) 
                 DO UPDATE SET 
                     display_name = EXCLUDED.display_name,
@@ -104,8 +111,8 @@ def save_user_to_db(username: str, user_data: dict):
                 user_data.get("password_hash"),
                 user_data.get("email"),
                 user_data.get("mfa_code"),
-                json.dumps(user_data.get("profile"))
-            )) # Upserts user record data securely to avoid duplicate keys or missing entries
+                profile_json
+            )) # Upserts user record data securely with explicit jsonb type casting to avoid serialization crashes
             conn.commit() # Commits transaction changes to the database
     except Exception as e:
         print(f"Error saving user {username} to Supabase: {e}") # Logs save errors

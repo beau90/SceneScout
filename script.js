@@ -482,7 +482,7 @@ function handleLogout() {
     const authMsg = document.getElementById("authMessage"); // Locates authentication status message text element
 
     if (dashboardScreen) dashboardScreen.style.display = "none"; // Hides main dashboard screen layout container element
-    if (authScreen) authScreen.style.display = "flex"; // Displays full-screen authentication sign-in screen overlay container with flex
+    if (authScreen) authScreen.style.display = "flex"; // RESTORED: Forces the sign-in overlay container back to visible flex display
     
     if (credForm) credForm.style.display = "block"; // Restores standard credential login form container block element on screen
     if (mfaSec) mfaSec.style.display = "none"; // Hides MFA verification input box section container element

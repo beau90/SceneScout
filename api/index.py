@@ -13,6 +13,8 @@ import base64                  # Imports base64 encoding library for binary-to-t
 import requests                # Imports HTTP library to make external GET/POST requests to REST APIs
 import bcrypt                  # Imports hashing library to securely encrypt and verify user passwords
 import jwt                     # Imports JSON Web Token library to issue and verify secure session tokens
+import psycopg2                # Imports PostgreSQL database driver adapter for Python
+import psycopg2.extras         # Imports PostgreSQL dictionary cursor extensions for clean row parsing
 from fastapi import FastAPI, File, UploadFile, HTTPException, Header # Imports core FastAPI web framework tools and request headers
 from fastapi.middleware.cors import CORSMiddleware # Imports CORS middleware to permit cross-origin browser requests
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType # Imports mail framework for sending SMTP messages
@@ -37,31 +39,94 @@ app.add_middleware(
 
 SECRET_KEY = "SUPER_SECRET_JWT_KEY_CHANGE_THIS_IN_PRODUCTION" # Sets the cryptographic signing key for user session tokens
 ALGORITHM = "HS256"             # Defines the standard HMAC-SHA256 encryption algorithm for JSON Web Tokens
-USERS_FILE = "users.json"         # Defines the filename string used for local JSON database storage
+DATABASE_URL = os.getenv("DATABASE_URL") # Loads the Supabase PostgreSQL connection string from environment variables
 
 # ==========================================
-# 3. LOCAL USER STORAGE & DATABASE HELPERS
+# 3. SUPABASE DATABASE HELPERS & STORAGE
 # ==========================================
-def load_users():
-    """Loads user records from the local users.json file if it exists."""
-    if os.path.exists(USERS_FILE): # Checks if the users json database file already exists on disk
-        try:
-            with open(USERS_FILE, "r") as f: # Opens the users file in read-only mode
-                return json.load(f) # Parses and returns the JSON content dictionary
-        except Exception:
-            return {} # Returns an empty dictionary if file reading fails
-    return {} # Returns an empty dictionary if the file does not exist
-
-def save_users():
-    """Saves the current in-memory user database dictionary back to the users.json file safely on read-only serverless filesystems."""
+def get_db_connection():
+    """Establishes and returns a secure SSL connection to the Supabase PostgreSQL database."""
+    if not DATABASE_URL:
+        print("Database Error: DATABASE_URL environment variable is missing.") # Logs error if connection string is absent
+        return None
     try:
-        with open(USERS_FILE, "w") as f: # Opens the users file in write mode
-            json.dump(users_db, f, indent=4) # Serializes the active user dictionary into formatted JSON text
+        conn = psycopg2.connect(DATABASE_URL, sslmode='require') # Connects securely to PostgreSQL with required SSL mode
+        return conn
     except Exception as e:
-        # Vercel is read-only, catching this prevents the app from crashing with a 500 server error
-        print(f"FileSystem Notice: Running on read-only storage ({e})")
+        print(f"Database Connection Error: {e}") # Logs connection failures
+        return None
 
-users_db = load_users() # Executes the loader function to populate the user database into server memory on startup
+def load_users():
+    """Loads all user records from the Supabase users table into an in-memory dictionary for rapid lookups."""
+    users = {}
+    conn = get_db_connection() # Opens database connection helper
+    if not conn:
+        return users
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+            cur.execute("SELECT * FROM users;") # Executes query to fetch all rows from users table
+            rows = cur.fetchall()
+            for row in rows:
+                username = row["username"]
+                users[username] = {
+                    "display_name": row["display_name"],
+                    "password_hash": row["password_hash"],
+                    "email": row["email"],
+                    "mfa_code": row["mfa_code"],
+                    "profile": row["profile"] if row["profile"] else {}
+                }
+    except Exception as e:
+        print(f"Error loading users from Supabase: {e}") # Logs exceptions during load
+    finally:
+        conn.close() # Always closes the database connection socket
+    return users
+
+def save_user_to_db(username: str, user_data: dict):
+    """Saves or updates a single user record securely in Supabase using an upsert query."""
+    conn = get_db_connection() # Opens database connection helper
+    if not conn:
+        return
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO users (username, display_name, password_hash, email, mfa_code, profile)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                ON CONFLICT (username) 
+                DO UPDATE SET 
+                    display_name = EXCLUDED.display_name,
+                    password_hash = EXCLUDED.password_hash,
+                    email = EXCLUDED.email,
+                    mfa_code = EXCLUDED.mfa_code,
+                    profile = EXCLUDED.profile;
+            """, (
+                username,
+                user_data.get("display_name"),
+                user_data.get("password_hash"),
+                user_data.get("email"),
+                user_data.get("mfa_code"),
+                json.dumps(user_data.get("profile"))
+            )) # Upserts user record data securely to avoid duplicate keys or missing entries
+            conn.commit() # Commits transaction changes to the database
+    except Exception as e:
+        print(f"Error saving user {username} to Supabase: {e}") # Logs save errors
+    finally:
+        conn.close() # Closes database connection socket
+
+def delete_user_from_db(username: str):
+    """Deletes a specific user record from the Supabase users table."""
+    conn = get_db_connection() # Opens database connection helper
+    if not conn:
+        return
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM users WHERE username = %s;", (username,)) # Deletes row by username key
+            conn.commit() # Commits deletion transaction
+    except Exception as e:
+        print(f"Error deleting user {username} from Supabase: {e}") # Logs deletion errors
+    finally:
+        conn.close() # Closes database connection socket
+
+users_db = load_users() # Executes loader function to populate user memory cache from Supabase on startup
 
 # ==========================================
 # 4. EMAIL & EXTERNAL AI/API CONFIGURATIONS
@@ -134,7 +199,7 @@ async def register(data: dict):
         "mfa_code": None,                           # Initializes pending multi-factor authentication code as null
         "profile": {"bio": "", "birthdate": "", "gender": "", "avatar": "🎬", "email": email, "phone": ""} # Sets default profile dictionary fields
     }
-    save_users() # Writes updated user dictionary to disk storage file
+    save_user_to_db(username, users_db[username]) # Persists newly created user record directly into Supabase
 
     return {"success": True, "message": "SceneScout account created successfully."} # Returns success JSON response
 
@@ -150,7 +215,7 @@ async def login(data: dict):
 
     code = generate_mfa_code() # Generates a fresh 6-digit MFA numeric verification code string
     user["mfa_code"] = code    # Assigns the generated verification code to the user record
-    save_users()               # Saves updated user database state to disk file
+    save_user_to_db(username, user) # Commits updated MFA code state to Supabase database
 
     # Constructs the email message payload schema to send to user's registered email address
     message = MessageSchema(
@@ -184,7 +249,7 @@ def verify_mfa(data: dict):
         raise HTTPException(status_code=401, detail="Invalid verification code.") # Raises 401 error if code mismatches
 
     user["mfa_code"] = None # Clears out used MFA code string from record for security
-    save_users()            # Commits updated user state to disk storage
+    save_user_to_db(username, user) # Persists updated clearance state to Supabase database
     
     token = create_access_token({"sub": username}) # Generates signed JWT session token string for user
     return {
@@ -270,7 +335,10 @@ async def update_profile(data: dict, username: str = Header(None)):
         if new_key != current_key:
             if new_key in users_db:
                 raise HTTPException(status_code=400, detail="Username already taken.") # Prevents duplicate usernames
-            users_db[new_key] = users_db.pop(current_key) # Re-keys database dictionary entry under new username key
+            
+            # Re-keys user record in Supabase database safely
+            delete_user_from_db(current_key)
+            users_db[new_key] = users_db.pop(current_key)
             user = users_db[new_key]
             updated_username_key = new_key
         user["display_name"] = raw_new_username
@@ -290,7 +358,7 @@ async def update_profile(data: dict, username: str = Header(None)):
     if avatar:                 # Updates avatar picture string if present
         user["profile"]["avatar"] = avatar
 
-    save_users() # Commits updated database changes to disk storage file
+    save_user_to_db(updated_username_key, user) # Persists all profile updates permanently to Supabase database
 
     return {
         "success": True,
@@ -309,8 +377,8 @@ def delete_account(username: str = Header(None)):
     if current_key not in users_db:
         raise HTTPException(status_code=401, detail="User not found.") # Verifies user database record exists
 
-    del users_db[current_key] # Deletes target user record dictionary entry from database
-    save_users()              # Saves updated database state to disk file
+    del users_db[current_key] # Deletes target user record dictionary entry from memory cache
+    delete_user_from_db(current_key) # Permanently removes user account row from Supabase database table
     return {"success": True, "message": "Account deleted successfully."} # Returns deletion success response
 
 # ==========================================
@@ -757,6 +825,6 @@ async def identify(file: UploadFile = File(...)):
 
     except Exception as e:
         return {
-            "success": False,
+            "success": false,
             "message": f"An error occurred while analyzing the image: {str(e)}"
         } # Returns error response dictionary if identification pipeline crashes

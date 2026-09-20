@@ -29,7 +29,7 @@
 // ==========================================
 const API_BASE_URL = "https://scenescout-sable.vercel.app"; // Defines live production Vercel backend API base URL string
 
-let isSignUpMode = false;         // Tracks whether the auth screen is currently set to Sign Up or Sign In mode
+let isSignUpMode = false;          // Tracks whether the auth screen is currently set to Sign Up or Sign In mode
 let currentPendingUser = "";       // Stores the username string of the actively logged-in or registering user account
 let userAuthToken = "";            // Stores the active authorization session token string received from backend
 let selectedAvatarValue = "🎬";    // Stores the currently selected avatar icon emoji character or custom image data URL string
@@ -43,7 +43,7 @@ const loadingQuotes = [
     "Microwaving The Popcorn!",    // Loading quip referencing snack preparation before movie screening
     "Enhancing The Pixels!",        // Loading quip referencing digital video quality enhancement techniques
     "Calling Steven Spielberg!",    // Loading quip referencing a famous legendary Hollywood movie director
-    "Rewinding The VHS!",           // Loading quip referencing retro magnetic tape cassette rewind mechanics
+    "Rewinding The VHS!",            // Loading quip referencing retro magnetic tape cassette rewind mechanics
     "Calling Christopher Nolan!",   // Loading quip referencing a contemporary blockbuster director known for complex plots
     "Interrogating Extras!",        // Loading quip referencing questioning background background actors on set
     "Consulting George Lucas!",     // Loading quip referencing sci-fi franchise creator and technological pioneer
@@ -462,7 +462,8 @@ async function fetchAndPopulateProfile() {
 }
 
 /**
- * Logs out the active user account, clears browser local storage authentication tokens, and resets authentication screen overlay.
+ * Logs out the active user account, clears browser local storage authentication tokens, 
+ * and redirects to the sign-in screen or resets the overlay.
  */
 function handleLogout() {
     userAuthToken = ""; // Clears session token memory state string value
@@ -474,6 +475,13 @@ function handleLogout() {
 
     const dashboardScreen = document.getElementById("dashboardScreen"); // Locates main dashboard screen container element
     const authScreen = document.getElementById("authScreen"); // Locates authentication full-screen overlay container element
+
+    // If we are currently on a page that lacks the auth overlay (like profile.html or tvshows.html), redirect to index.html
+    if (!authScreen || !dashboardScreen) {
+        window.location.href = "index.html";
+        return;
+    }
+
     const credForm = document.getElementById("credentialsForm"); // Locates credentials login form container element
     const mfaSec = document.getElementById("mfaSection"); // Locates MFA section container element
     const usernameInput = document.getElementById("usernameInput"); // Locates username text input field element
@@ -481,25 +489,21 @@ function handleLogout() {
     const mfaCodeInput = document.getElementById("mfaCodeInput"); // Locates 6-digit MFA code input element
     const authMsg = document.getElementById("authMessage"); // Locates authentication status message text element
 
-    if (dashboardScreen) {
-        dashboardScreen.style.display = "none"; // Hides main dashboard screen layout container element
-        dashboardScreen.classList.add("dashboard-screen-hidden"); // Adds utility hidden class
-    }
+    dashboardScreen.style.display = "none"; // Hides dashboard screen
+    dashboardScreen.classList.add("dashboard-screen-hidden"); // Adds hidden CSS class
     
-    if (authScreen) {
-        authScreen.style.display = "flex"; // RESTORED: Forces the sign-in overlay container back to visible flex display
-        authScreen.classList.remove("modal-overlay-hidden"); // Removes any hidden classes blocking view
-    }
+    authScreen.style.display = "flex"; // Forces auth screen to display as flex container
+    authScreen.classList.remove("modal-overlay-hidden"); // Ensures hidden class is removed
     
-    if (credForm) credForm.style.display = "block"; // Restores standard credential login form container block element on screen
-    if (mfaSec) mfaSec.style.display = "none"; // Hides MFA verification input box section container element
+    if (credForm) credForm.style.display = "block"; // Restores standard credential login form
+    if (mfaSec) mfaSec.style.display = "none"; // Hides MFA verification box
     
-    if (usernameInput) usernameInput.value = ""; // Resets username text input field value string to empty
-    if (passwordInput) passwordInput.value = ""; // Resets password text input field value string to empty
-    if (mfaCodeInput) mfaCodeInput.value = ""; // Resets MFA code text input field value string to empty
-    if (authMsg) authMsg.textContent = ""; // Clears status notification message string content safely
+    if (usernameInput) usernameInput.value = ""; // Resets username input
+    if (passwordInput) passwordInput.value = ""; // Resets password input
+    if (mfaCodeInput) mfaCodeInput.value = ""; // Resets MFA code input
+    if (authMsg) authMsg.textContent = ""; // Clears status message
     
-    resetSearch(); // Resets search upload container state variables and elements back to default
+    resetSearch(); // Resets search upload container state
 }
 
 // ==========================================

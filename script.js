@@ -481,8 +481,15 @@ function handleLogout() {
     const mfaCodeInput = document.getElementById("mfaCodeInput"); // Locates 6-digit MFA code input element
     const authMsg = document.getElementById("authMessage"); // Locates authentication status message text element
 
-    if (dashboardScreen) dashboardScreen.style.display = "none"; // Hides main dashboard screen layout container element
-    if (authScreen) authScreen.style.display = "flex"; // RESTORED: Forces the sign-in overlay container back to visible flex display
+    if (dashboardScreen) {
+        dashboardScreen.style.display = "none"; // Hides main dashboard screen layout container element
+        dashboardScreen.classList.add("dashboard-screen-hidden"); // Adds utility hidden class
+    }
+    
+    if (authScreen) {
+        authScreen.style.display = "flex"; // RESTORED: Forces the sign-in overlay container back to visible flex display
+        authScreen.classList.remove("modal-overlay-hidden"); // Removes any hidden classes blocking view
+    }
     
     if (credForm) credForm.style.display = "block"; // Restores standard credential login form container block element on screen
     if (mfaSec) mfaSec.style.display = "none"; // Hides MFA verification input box section container element

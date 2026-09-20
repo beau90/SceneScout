@@ -287,12 +287,23 @@ async def forgot_password(data: dict):
 # ==========================================
 @app.get("/api/profile")
 def get_profile(username: str = Header(None)):
-    """API endpoint to fetch profile data for the authenticated user based on request header with email injection."""
+    """API endpoint to fetch profile data with case-insensitive user lookup and email injection."""
+    global users_db
+    users_db = load_users() # Forces cache refresh from Supabase on every profile request
+
     if not username:
         raise HTTPException(status_code=401, detail="User not found.") # Raises 401 error if username header is missing
     
-    current_key = username.strip().lower() # Normalizes username string for database key lookup
-    if current_key not in users_db:
+    target_username = username.strip()
+    
+    # Case-insensitive lookup matching
+    current_key = None
+    for k in users_db.keys():
+        if k.lower() == target_username.lower():
+            current_key = k
+            break
+
+    if not current_key or current_key not in users_db:
         raise HTTPException(status_code=401, detail="User not found.") # Raises 401 error if user record absent
 
     user = users_db[current_key] # Retrieves target user record dictionary
@@ -310,7 +321,7 @@ def get_profile(username: str = Header(None)):
 
 @app.post("/api/profile/update")
 async def update_profile(data: dict, username: str = Header(None)):
-    """API endpoint to update user profile details with global reload and body fallback lookup."""
+    """API endpoint to update user profile details with case-insensitive lookup and global cache refresh."""
     global users_db
     users_db = load_users() # Forces cache refresh from Supabase on every update request
 
@@ -321,9 +332,17 @@ async def update_profile(data: dict, username: str = Header(None)):
     if not username:
         raise HTTPException(status_code=401, detail="User not found. Missing username identifier.") # Validates username presence
     
-    current_key = username.strip().lower() # Normalizes active user database lookup key string
-    if current_key not in users_db:
-        raise HTTPException(status_code=401, detail=f"User '{current_key}' not found in database.") # Verifies user record exists
+    target_username = username.strip()
+
+    # Case-insensitive search: look for a matching username regardless of capitalization
+    current_key = None
+    for k in users_db.keys():
+        if k.lower() == target_username.lower():
+            current_key = k
+            break
+
+    if not current_key or current_key not in users_db:
+        raise HTTPException(status_code=401, detail=f"User '{target_username}' not found in database.") # Verifies user record exists
 
     user = users_db[current_key]           # Retrieves active user dictionary reference
     updated_username_key = current_key     # Initializes tracking variable for updated username keys
@@ -345,8 +364,8 @@ async def update_profile(data: dict, username: str = Header(None)):
 
     if raw_new_username: # Checks if username modification was requested
         new_key = raw_new_username.lower()
-        if new_key != current_key:
-            if new_key in users_db:
+        if new_key != current_key.lower():
+            if any(k.lower() == new_key for k in users_db.keys()):
                 raise HTTPException(status_code=400, detail="Username already taken.") # Prevents duplicate usernames
             
             # Re-keys user record in Supabase database safely
@@ -382,12 +401,21 @@ async def update_profile(data: dict, username: str = Header(None)):
 
 @app.post("/api/account/delete")
 def delete_account(username: str = Header(None)):
-    """API endpoint to permanently delete a user account from the database."""
+    """API endpoint to permanently delete a user account from the database with case-insensitive lookup."""
+    global users_db
+    users_db = load_users()
+
     if not username:
         raise HTTPException(status_code=401, detail="User not found.") # Validates header username presence
     
-    current_key = username.strip().lower() # Normalizes lookup username string key
-    if current_key not in users_db:
+    target_username = username.strip()
+    current_key = None
+    for k in users_db.keys():
+        if k.lower() == target_username.lower():
+            current_key = k
+            break
+
+    if not current_key or current_key not in users_db:
         raise HTTPException(status_code=401, detail="User not found.") # Verifies user database record exists
 
     del users_db[current_key] # Deletes target user record dictionary entry from memory cache
